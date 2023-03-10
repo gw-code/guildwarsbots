@@ -9,6 +9,7 @@
 #include <EditConstants.au3>
 #include <GuiEdit.au3>
 #include <Array.au3>
+#include <WinAPI.au3>
 #NoTrayIcon
 
 ;Guild Wars Omni Api includes

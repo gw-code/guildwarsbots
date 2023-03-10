@@ -16,6 +16,10 @@ Func CountSlots()
 	Return $FreeSlots
 EndFunc   ;==>CountSlots
 
+Func _PointerToStringW($ptr)
+    Return DllStructGetData(DllStructCreate("wchar[" & _WinAPI_StringLenW($ptr) & "]", $ptr), 1)
+EndFunc
+
 Func CanPickUp($aitem)
 	$m = DllStructGetData($aitem, 'ModelID')
 	$lRarity = GetRarity($aitem)

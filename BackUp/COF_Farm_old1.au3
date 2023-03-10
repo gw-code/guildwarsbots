@@ -15,7 +15,7 @@ $dropCounterDictionary.Add($ITEM_ID_Golden_Rin_Relic, "Rin")
 $dropCounterDictionary.Add($ITEM_ID_Diesa, "Diesa")
 
 Global $farmSpecific[4] = [$dropCounterDictionary.Keys]
-Global $vosCounter = 0
+
 initGui($dropCounterDictionary)
 
 $TakeBless = GUICtrlCreateCheckbox("Take Blessing", 180, 248, 110, 17)
@@ -53,7 +53,6 @@ While 1
 WEnd
 
 Func MainLoop()
-	$vosCounter = 0
 	Local $Gron = GetNearestNPCToCoords(-19090, 17980)
 	DeactivateAllGUI(0)
 
@@ -106,7 +105,7 @@ Func Setup() ;Travels to Doomlore, leaves group and switch to normal mode
 	Local $Gron = GetNearestNPCToCoords(-19090, 17980)
 	If GetMapID() <> $MAP_ID_DOOMLORE Then
 		Out("Traveling to Doomlore.")
-		Travel($MAP_ID_DOOMLORE)
+		RndTravel($MAP_ID_DOOMLORE)
 	EndIf
 	SwitchMode(0)
 	RndSleep(500)
@@ -118,7 +117,7 @@ EndFunc   ;==>Setup
 Func SetUpFastWay() ;Setup resign and starts farm
 	GUICtrlSetData($storageGold, GetGoldStorage())
 	GUICtrlSetData($inventoryGold, GetGoldCharacter())
-	LoadSkillTemplate("OgCjkqqLrSihdftXYijhOXhX0kA")
+	LoadSkillTemplate("OgCjkqqLrSihdftXYiWgOXhX7XA")
 
 	Local $Gron = GetNearestNPCToCoords(-19090, 17980)
 
@@ -174,11 +173,7 @@ Func CheckVoS() ;Checks the Vow of Silence still active all time
 		UseSkillExCoF($pious)
 		UseSkillExCoF($grenths)
 		UseSkillExCoF($vos)
-		$vosCounter += 1
-
-		If $vosCounter == 3 Then
-			UseSkillExCoF($mystic)
-		EndIf
+		UseSkillExCoF($mystic)
 	EndIf
 EndFunc   ;==>CheckVoS
 
@@ -189,16 +184,15 @@ Func Kill() ;Kills mobs
 		If GetMapLoading() == 2 Then Disconnected()
 		If GetIsDead(-2) Then Return
 		CheckVoS()
-		TargetNearestEnemy()
-		If GetHasCondition(GetCurrentTarget()) And GetSkillbarSkillAdrenaline($reap) >= 120 Then
+		If GetSkillbarSkillAdrenaline($reap) >= 120 Then
+			
+			TargetNearestEnemy()
+			If GetHasCondition(GetCurrentTarget()) Then
 			UseSkill($reap, -1)
+			Else
+			UseSkillExCoF($crippling)
+			Endif
 			RndSleep(800)
-			ContinueLoop
-		EndIf
-		If GetSkillbarSkillAdrenaline($crippling) >= 150 Then
-			UseSkill($crippling, -1)
-			RndSleep(800)
-			ContinueLoop
 		EndIf
 		Sleep(100)
 		TargetNearestEnemy()
@@ -230,7 +224,7 @@ Func GetNumberOfFoesInRangeOfAgent($aAgent = -2, $aRange = 1250)
 	Local $lAgent, $lDistance
 	Local $lCount = 0, $lAgentArray = GetAgentArray(0xDB)
 	If Not IsDllStruct($aAgent) Then $aAgent = GetAgentByID($aAgent)
-	For $i = 0 To $lAgentArray[0]
+	For $i = 1 To $lAgentArray[0]
 		$lAgent = $lAgentArray[$i]
 		If BitAND(DllStructGetData($lAgent, 'typemap'), 262144) Then
 			If StringLeft(GetAgentName($lAgent), 7) <> "Servant" Then ContinueLoop
@@ -301,12 +295,15 @@ EndFunc   ;==>CheckArrayPscon
 #EndRegion Environnement Interactions Functions
 
 #Region Map interaction Functions
-Func Travel($map)
-	If GetMapID() <> $map Then
-		TravelTo($map)
-		WaitMapLoading($map)
-	EndIf
-EndFunc  
+Func RndTravel($aMapID) ;Travel to a random region in the outpost
+	Local $UseDistricts = 7 ; 7=eu-only, 8=eu+int, 11=all(excluding America)
+	; Region/Language order: eu-en, eu-fr, eu-ge, eu-it, eu-sp, eu-po, eu-ru, us-en, int, asia-ko, asia-ch, asia-ja
+	Local $Region[11] = [2, 2, 2, 2, 2, 2, 2, -2, 1, 3, 4]
+	Local $Language[11] = [0, 2, 3, 4, 5, 9, 10, 0, 0, 0, 0]
+	Local $Random = Random(0, $UseDistricts - 1, 1)
+	MoveMap($aMapID, 1, 0, 0)
+	waitmaploading($aMapID)
+EndFunc   ;==>RndTravel
 #EndRegion Map interaction Functions
 
 #Region Sell Functions
