@@ -118,7 +118,7 @@ EndFunc   ;==>Setup
 Func SetUpFastWay() ;Setup resign and starts farm
 	GUICtrlSetData($storageGold, GetGoldStorage())
 	GUICtrlSetData($inventoryGold, GetGoldCharacter())
-	LoadSkillTemplate("OgCjkqqLrSihdftXYijhOXhX0kA")
+	LoadSkillTemplate("OgCjkqqLrSihdftXYijhOXhX7XA")
 
 	Local $Gron = GetNearestNPCToCoords(-19090, 17980)
 
