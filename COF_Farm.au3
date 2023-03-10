@@ -15,7 +15,6 @@ $dropCounterDictionary.Add($ITEM_ID_Golden_Rin_Relic, "Rin")
 $dropCounterDictionary.Add($ITEM_ID_Diesa, "Diesa")
 
 Global $farmSpecific[4] = [$dropCounterDictionary.Keys]
-Global $vosCounter = 0
 initGui($dropCounterDictionary)
 
 $TakeBless = GUICtrlCreateCheckbox("Take Blessing", 180, 248, 110, 17)
@@ -53,7 +52,6 @@ While 1
 WEnd
 
 Func MainLoop()
-	$vosCounter = 0
 	Local $Gron = GetNearestNPCToCoords(-19090, 17980)
 	DeactivateAllGUI(0)
 
@@ -174,11 +172,6 @@ Func CheckVoS() ;Checks the Vow of Silence still active all time
 		UseSkillExCoF($pious)
 		UseSkillExCoF($grenths)
 		UseSkillExCoF($vos)
-		$vosCounter += 1
-
-		If $vosCounter == 3 Then
-			UseSkillExCoF($mystic)
-		EndIf
 	EndIf
 EndFunc   ;==>CheckVoS
 
