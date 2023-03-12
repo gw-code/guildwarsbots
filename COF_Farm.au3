@@ -178,7 +178,7 @@ EndFunc   ;==>CheckVoS
 Func Kill() ;Kills mobs
 	If GetMapLoading() == 2 Then Disconnected()
 	If GetIsDead(-2) Then Return
-	While GetNumberOfFoesInRangeOfAgent(-2, 800) > 0
+	While GetNumberOfFoesInRangeOfAgent(-2, 1000) > 0
 		If GetMapLoading() == 2 Then Disconnected()
 		If GetIsDead(-2) Then Return
 		CheckVoS()
