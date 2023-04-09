@@ -132,6 +132,9 @@ Func MainLoop()
 	UseSkillEx(1)
 	UseSkillEx(2)
 	UseSkillEx(3)
+	While GetEnergy(-2) <= 11
+		Sleep(500)
+	WEnd
 	UseSkillEx(4)
 
 	Out("Running to FarmRoute Waypoint 1")
