@@ -17,13 +17,12 @@ Func CountSlots()
 EndFunc   ;==>CountSlots
 
 Func _PointerToStringW($ptr)
-    Return DllStructGetData(DllStructCreate("wchar[" & _WinAPI_StringLenW($ptr) & "]", $ptr), 1)
-EndFunc
+	Return DllStructGetData(DllStructCreate("wchar[" & _WinAPI_StringLenW($ptr) & "]", $ptr), 1)
+EndFunc   ;==>_PointerToStringW
 
 Func CanPickUp($aitem)
 	$m = DllStructGetData($aitem, 'ModelID')
 	$lRarity = GetRarity($aitem)
-
 	_ArrayConcatenate($wontSell, $farmSpecific)
 	For $i = 0 To UBound($wontSell) - 1
 		If ($m = $wontSell[$i]) Then
@@ -46,7 +45,6 @@ Func Sell($bagIndex)
 		$aitem = GetItemBySlot($bagIndex, $i)
 		If DllStructGetData($aitem, 'ID') = 0 Then ContinueLoop
 		If CanSell($aitem) Then
-			Out("Selling item: " & DllStructGetData($aitem, 'ModelID'))
 			SellItem($aitem)
 		EndIf
 		RndSleep(250)

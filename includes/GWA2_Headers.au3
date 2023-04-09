@@ -27,12 +27,12 @@ Global Const $HEADER_HERO_AGGRESSION = 0x13	;Sets the heroes aggression level
 ;GAME_CMSG_HERO_LOCK_TARGET
 Global Const $HEADER_HERO_LOCK = 0x14	;Locks the heroes target
 ;GAME_CMSG_HERO_SKILL_TOGGLE
-Global Const $HEADER_HERO_TOGGLE_SKILL = 0x19	;Enables or disables the heroes skill
+Global Const $HEADER_HERO_TOGGLE_SKILL = 0x17	;Enables or disables the heroes skill
 ;GAME_CMSG_HERO_FLAG_SINGLE
 Global Const $HEADER_HERO_PLACE_FLAG = 0x18	;Sets the heroes position flag, hero runs to position
 Global Const $HEADER_HERO_CLEAR_FLAG = 0x18	;Clears the heroes position flag
 ;GAME_CMSG_HERO_ADD 0x1D or GAME_SMSG_PARTY_HERO_ADD 0x1C8
-Global Const $HEADER_HERO_ADD = 0x1C	;Adds hero to party
+Global Const $HEADER_HERO_ADD = 0x1C
 ;GAME_CMSG_HERO_KICK 0x1E or GAME_SMSG_PARTY_HERO_REMOVE 0x1C9
 Global Const $HEADER_HERO_KICK = 0x1D	;Kicks hero from party
 Global Const $HEADER_HEROES_KICK = 0x1D	;Kicks ALL heroes from party
@@ -122,6 +122,7 @@ Global Const $HEADER_TRADE_CHANGE_OFFER = 0x02	;Change offer
 Global Const $HEADER_TRADE_CANCEL = 0x01	;Cancel trade
 ;GAME_CMSG_TRADE_ACCEPT
 Global Const $HEADER_TRADE_ACCEPT = 0x07	;Accept trade
+Global Const $HEADER_OPEN_CHEST = 0x51
 
 ;=TRAVEL=
 ;GAME_CMSG_PARTY_TRAVEL
@@ -193,3 +194,5 @@ Global Const $HEADER_MAX_ATTRIBUTES_CONST_22	= 0x03	;constant at word 22 of max 
 Global Const $HEADER_OPEN_GB_WINDOW = 0x9E
 Global Const $HEADER_CLOSE_GB_WINDOW = 0x9F
 Global Const $HEADER_START_RATING_GVG = 0xA8
+
+Global Const $HEADER_HERO_SKILL_TOGGLE = 0x17

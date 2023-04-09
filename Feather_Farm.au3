@@ -23,7 +23,10 @@ $Gui = GUICreate($title & " - Derv Edition", 362, 420, -1, -1)
 Local $dropCounterDictionary = ObjCreate("Scripting.Dictionary")
 $dropCounterDictionary.Add($ITEM_ID_feather, "Feather")
 $dropCounterDictionary.Add($ITEM_ID_Feathered_Crest, "Crests")
-Global $farmSpecific[2] = [$dropCounterDictionary.Keys]
+$dropCounterDictionary.Add($ITEM_ID_BONES, "Bones")
+$dropCounterDictionary.Add($ITEM_ID_Shing_Jea_Key, "Keys")
+
+Global $farmSpecific[4] = [$dropCounterDictionary.Keys]
 
 initGui($dropCounterDictionary)
 

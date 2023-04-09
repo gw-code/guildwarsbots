@@ -3,15 +3,13 @@
 Global Const $MAP_ID_DOOMLORE = 648
 Global Const $MAP_ID_COF = 560
 Global Const $MAP_ID_LONGEYE = 650
+Global Const $MAP_ID_CTC = 652
+Global Const $MAP_ID_GLINTS = 37
 
 ; === Dialogs ===
 Global Const $FIRST_DIALOG = 0x832105
 Global Const $SECOND_DIALOG = 0x88
 Global Const $THIRD_DIALOG = 0x7F
-
-; === Builds ===
-Global Const $cofTemplate = "OgCjkqqLrSihdftXYijhOXhX0kA"
-Global Const $featherTemplate = "OgejkmrMbSmXfbaXNXTQ3lEYsXA"
 
 ; === Skills ===
 Global Const $pious = 1

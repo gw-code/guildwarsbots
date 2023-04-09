@@ -13,8 +13,8 @@
 #NoTrayIcon
 
 ;Guild Wars Omni Api includes
-#include "GWA2_Headers.au3"
 #include "GWA2.au3"
+#include "GWA2_Headers.au3"
 #include "GW_Api/Declarations.au3"
 #include "GW_Api/Global_Items2.au3"
 #include "GW_Api/BotConstants.au3"

@@ -8,7 +8,7 @@
 Global $strName = "Toons Sin"
 
 ; Build Template:
-$skillbar = "OgcTYnL/ZiHRn5AKu8uU4A3B6AA"
+$skillbar = "OwJTYZ/8ZiHRn5AKu8uU4A3B6AA"
 
 Global $NQ = 216 ; Nahpui Quarter
 Global $WB = 239 ; Wajing Basar
@@ -62,8 +62,15 @@ While 1
 		AdlibRegister("TimeUpdater", 1000)
 	EndIf
 	Travel($NQ)
+	KickAllHeroes()
 	LoadSkillTemplate($skillbar)
 	SwitchMode(1)
+	AddHero(11)
+	SetHeroAggression(1, 2)
+	Sleep(500)
+	EnableHeroSkillSlot(1, 1)
+	DisableHeroSkillSlot(1, 2)
+	DisableHeroSkillSlot(1, 3)
 	SetupResignPosition()
 	While $BotRunning
 		If isInventoryFull() Then
@@ -109,6 +116,14 @@ Func MainLoop()
 	While Not GetMapIsLoaded()
 		Sleep(100)
 	WEnd
+	Out("Flagging Hero")
+	CommandHero(1, 8946.49, -19282.36)
+	Sleep(1500)
+	UseHeroSkill(1, 1, GetAgentByID())
+	Sleep(1500)
+	UseHeroSkill(1, 2, GetAgentByID())
+	Sleep(1500)
+	UseHeroSkill(1, 3, GetAgentByID())
 	Out("Running to Farmspot")
 	MoveTo(7860, -17800)
 	MoveTo(4000, -17000)
@@ -158,8 +173,8 @@ Func MainLoop()
 	Out("Balling Necros")
 	MoveTo(400, -14200)
 	MoveTo(-400, -14200)
-	$enemy = DllStructGetData(GetNearestAgentToCoords(-220, -14400), 'ID')
-	MoveTo(-850, -14500)
+
+	MoveTo(-958, -14500)
 	If GetIsdead(-2) Then
 		HardLeave()
 		Return False
@@ -170,7 +185,7 @@ Func MainLoop()
 		Sleep(50)
 	WEnd
 	UseSkillEx(2)
-
+	$enemy = DllStructGetData(GetBestTarget(), 'ID')
 	Out("Setting up EOE")
 	Out("Kill! >:O")
 	UseSkillEx(7, $enemy)
@@ -181,7 +196,7 @@ Func MainLoop()
 	While Not GetIsDead($enemy)
 		Sleep(100)
 		$Timeout = $Timeout + 100
-		If $Timeout > 8000 Then ExitLoop
+		If $Timeout > 12000 Then ExitLoop
 	WEnd
 	Sleep(250)
 

@@ -24,6 +24,7 @@ Local $mSkillLogStruct = DllStructCreate('dword;dword;dword;float')
 Local $mSkillLogStructPtr = DllStructGetPtr($mSkillLogStruct)
 Local $mChatLogStruct = DllStructCreate('dword;wchar[256]')
 Local $mChatLogStructPtr = DllStructGetPtr($mChatLogStruct)
+Local $OpenedChestAgentIDs
 GUIRegisterMsg(0x501, 'Event')
 
 Local $mQueueCounter, $mQueueSize, $mQueueBase
@@ -57,6 +58,91 @@ Local $mLastDialogID
 
 Local $mUseStringLog
 Local $mUseEventSystem
+
+#Region Chest
+Global $aChestID[10000]
+     $aChestID[65] = "Krytan Chest"
+     $aChestID[66] = "Elonian Chest"
+     $aChestID[67] = "Maguuma Chest"
+     $aChestID[68] = "Phantom Chest"
+     $aChestID[69] = "Ascalonian Chest"
+	 $aChestID[70] = "Miners Chest"
+     $aChestID[71] = "Steel Chest"
+     $aChestID[72] = "Shiverpeak Chest"
+     $aChestID[73] = "Darkstone Chest"
+	 $aChestID[74] = "Obsidian Chest"
+	 $aChestID[4576] = "Forbidden Chest"
+     $aChestID[4577] = "Kurzick Chest"
+	 $aChestID[4578] = "Stoneroot Chest"
+     $aChestID[4579] = "Shing Jea Chest"
+	 $aChestID[4580] = "Luxon Chest"
+	 $aChestID[4581] = "Deep Jade Chest"
+     $aChestID[4582] = "Canthan Chest"
+	 $aChestID[6061] = "Ancient Elonian Chest"
+     $aChestID[6062] = "Istani Chest"
+	 $aChestID[6063] = "Vabbi Chest"
+     $aChestID[6064] = "Kournan Chest"
+     $aChestID[6065] = "Margonite Chest"
+     $aChestID[7053] = "Demonic Chest"
+	 $aChestID[8141] = "Locked Chest"
+#EndRegion Chest
+
+#Region Keys
+Global $aKeyID[25000]
+	 $aKeyID[5882] = "Phantom Key"
+	 $aKeyID[5960] = "Elonian Key"
+	 $aKeyID[5961] = "Miners Key"
+	 $aKeyID[5962] = "Shiverpeak Key"
+	 $aKeyID[5963] = "Darkstone Key"
+	 $aKeyID[5964] = "Krytan Key"
+	 $aKeyID[5965] = "Maguuma Key"
+	 $aKeyID[5966] = "Ascalonian Key"
+	 $aKeyID[5967] = "Steel Key"
+	 $aKeyID[5971] = "Obsidian Key"
+	 $aKeyID[6534] = "Forbiden Key"
+	 $aKeyID[6535] = "Kurzick Key"
+	 $aKeyID[6536] = "Stoneroot Key"
+	 $aKeyID[6537] = "Shing Jea Key"
+	 $aKeyID[6538] = "Luxon Key"
+	 $aKeyID[6539] = "Deep Jade Key"
+	 $aKeyID[6540] = "Canthan Key"
+	 $aKeyID[15556] = "Ancient Elonian Key"
+	 $aKeyID[15557] = "Istani Key"
+	 $aKeyID[15558] = "Vabbi Key"
+	 $aKeyID[15559] = "Kourman Key"
+	 $aKeyID[15560] = "Margonite Key"
+	 $aKeyID[19174] = "Demonic Key"
+	 $aKeyID[22751] = "Lockpick"
+#EndRegion Keys
+
+#Region Array Chest &Keys
+Global $aChest_And_Key[24][4]=[ _
+     [65, "Krytan Chest", 5964, "Krytan Key"], _
+     [66, "Elonian Chest", 5960, "Elonian Key"], _
+     [67, "Maguuma Chest", 5965, "Maguuma Key"], _
+     [68, "Phantom Chest", 5882, "Phantom Key"], _
+     [69, "Ascalonian Chest", 5966, "Ascalonian Key"], _
+	 [70, "Miners Chest", 5961, "Miners Key"], _
+     [71, "Steel Chest", 5967, "Steel Key"], _
+     [72, "Shiverpeak Chest", 5962, "Shiverpeak Key"], _
+     [73, "Darkstone Chest", 5963, "Darkstone Key"], _
+	 [74, "Obsidian Chest", 5971, "Obsidian Key"], _
+	 [4576, "Forbidden Chest", 6534, "Forbiden Key"], _
+     [4577, "Kurzick Chest", 6535, "Kurzick Key"], _
+	 [4578, "Stoneroot Chest", 6536, "Stoneroot Key"], _
+     [4579, "Shing Jea Chest", 6537, "Shing Jea Key"], _
+	 [4580, "Luxon Chest", 6538, "Luxon Key"], _
+	 [4581, "Deep Jade Chest", 6539, "Deep Jade Key"], _
+     [4582, "Canthan Chest", 6540, "Canthan Key"], _
+	 [6061, "Ancient Elonian Chest", 15556, "Ancient Elonian Key"], _
+     [6062, "Istani Chest", 15557, "Istani Key"], _
+	 [6063, "Vabbi Chest", 15558, "Vabbi Key"], _
+     [6064, "Kournan Chest", 15559, "Kourman Key"], _
+     [6065, "Margonite Chest", 15560, "Margonite Key"], _
+     [7053, "Demonic Chest", 19174, "Demonic Key"], _
+	 [8141, "Locked Chest", 22751, "Lockpick"]]
+#EndRegion Array Chest &Keys
+
 #EndRegion Declarations
 
 #Region CommandStructs
@@ -1182,7 +1268,7 @@ EndFunc   ;==>KickHero
 
 ;~ Description: Kicks all heroes from the party.
 Func KickAllHeroes()
-	Return SendPacket(0x8, $HEADER_HEROES_KICK, 0x26)
+	Return SendPacket(0x8, $HEADER_HERO_KICK, 0x26)
 EndFunc   ;==>KickAllHeroes
 
 ;~ Description: Add a henchman to the party.
@@ -1228,6 +1314,7 @@ Func SetHeroAggression($aHeroNumber, $aAggression) ;0=Fight, 1=Guard, 2=Avoid
 	Return SendPacket(0xC, $HEADER_HERO_AGGRESSION, $lHeroID, $aAggression)
 EndFunc   ;==>SetHeroAggression
 
+#Region Hero Skillbar Interaction
 ;~ Description: Disable a skill on a hero's skill bar.
 Func DisableHeroSkillSlot($aHeroNumber, $aSkillSlot)
 	If Not GetIsHeroSkillSlotDisabled($aHeroNumber, $aSkillSlot) Then ChangeHeroSkillSlotState($aHeroNumber, $aSkillSlot)
@@ -1313,7 +1400,7 @@ Func GoPlayer($aAgent)
 		$lAgentID = DllStructGetData($aAgent, 'ID')
 	EndIf
 
-	Return SendPacket(0x8, $HEADER_AGENT_FOLLOW , $lAgentID)
+	Return SendPacket(0x8, $HEADER_AGENT_FOLLOW, $lAgentID)
 EndFunc   ;==>GoPlayer
 
 ;~ Description: Talk to an NPC
@@ -2515,6 +2602,17 @@ EndFunc   ;==>GetMaxImperialFaction
 #EndRegion Faction
 
 #Region Item
+Func ItemSingleItemNameByPtr($lItemID)
+	Return MemoryRead(GetItemPtr($lItemID) + 60, "long")
+EndFunc
+
+Func GetItemPtr($aItem)
+	If IsPtr($aItem) Then Return $aItem
+	Local $lOffset[5] = [0, 0x18, 0x40, 0xB8, 0x4 * $aItem]
+	Local $lItemStructAddress = MemoryReadPtr($mBasePointer, $lOffset, "ptr")
+	Return $lItemStructAddress[1]
+EndFunc   ;==>GetItemPtr
+
 ;~ Description: Returns rarity (name color) of an item.
 Func GetRarity($aItem)
 	If Not IsDllStruct($aItem) Then $aItem = GetItemByItemID($aItem)
@@ -3212,6 +3310,7 @@ Func GetAgentDanger($aAgent, $aAgentArray = 0)
 	Next
 	Return $lCount
 EndFunc   ;==>GetAgentDanger
+
 #EndRegion Agent
 
 #Region AgentInfo
@@ -3572,13 +3671,14 @@ EndFunc   ;==>GetEffect
 Func GetEffectTimeRemaining($aEffect)
 	If Not IsDllStruct($aEffect) Then $aEffect = GetEffect($aEffect)
 	If IsArray($aEffect) Then Return 0
-	Return DllStructGetData($aEffect, 'Duration') * 1000
-;~ 	Return DllStructGetData($aEffect, 'Duration') * 1000 - (GetSkillTimer() - DllStructGetData($aEffect, 'TimeStamp'))
+ 	Return DllStructGetData($aEffect, 'Duration') * 1000 - (GetSkillTimer() - DllStructGetData($aEffect, 'TimeStamp'))
 EndFunc   ;==>GetEffectTimeRemaining
 
 ;~ Description: Returns the timestamp used for effects and skills (milliseconds).
 Func GetSkillTimer()
-	Return MemoryRead($mSkillTimer, "long")
+	Static Local $lExeStart = MemoryRead($mSkillTimer, 'dword')
+	Local $lTickCount = DllCall($mKernelHandle, 'dword', 'GetTickCount')[0]
+	Return Int($lTickCount + $lExeStart, 1)
 EndFunc   ;==>GetSkillTimer
 
 ;~ Description: Returns level of an attribute.
@@ -5913,7 +6013,7 @@ Func WaitMapLoading($aMapID = 0, $aDeadlock = 10000)
 		If TimerDiff($lDeadlock) > $aDeadlock And $aDeadlock > 0 Then Return False
 	Until $lMapLoading <> 2 And GetMapIsLoaded() And (GetMapID() = $aMapID Or $aMapID = 0)
 
-	RndSleep(5000)
+	RndSleep(1000)
 
 	Return True
 EndFunc   ;==>WaitMapLoading
@@ -6037,3 +6137,36 @@ Func GetMaxSlots($aBag)
 	EndIf
 EndFunc   ;==>GetMaxSlots
 
+Func GetAgentArraySorted($lAgentType)     ;returns a 2-dimensional array([agentID, [distance]) sorted by distance
+	Local $lDistance
+	Local $lAgentArray = GetAgentArray($lAgentType)
+	Local $lReturnArray[1][2]
+	Local $lMe = GetAgentByID(-2)
+	Local $AgentID
+	For $i = 1 To $lAgentArray[0]
+		$lDistance = (DllStructGetData($lMe, 'X') - DllStructGetData($lAgentArray[$i], 'X')) ^ 2 + (DllStructGetData($lMe, 'Y') - DllStructGetData($lAgentArray[$i], 'Y')) ^ 2
+		$AgentID = DllStructGetData($lAgentArray[$i], 'ID')
+		ReDim $lReturnArray[$i][2]
+		$lReturnArray[$i - 1][0] = $AgentID
+		$lReturnArray[$i - 1][1] = Sqrt($lDistance)
+	Next
+	_ArraySort($lReturnArray, 0, 0, 0, 1)
+	Return $lReturnArray
+EndFunc   ;==>GetAgentArraySorted
+
+#Region Chest
+Func OpenChestByExtraType($ExtraType)
+	$Key_In_Bag = DllStructGetData($aChest_And_Key[$ExtraType][2], 'Bag')
+	If $Key_In_Bag <> 0 Then
+		OpenChestNoLockpick()
+	Else
+		OpenChest()
+	EndIf
+EndFunc   ;==>OpenChestByExtraType
+
+;~ Description: Open a chest with key.
+Func OpenChestNoLockpick()
+	Return SendPacket(0x8, $HEADER_OPEN_CHEST, 1)
+EndFunc   ;==>OpenChestNoLockpick
+
+#EndRegion Chest
