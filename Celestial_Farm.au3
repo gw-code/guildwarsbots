@@ -258,10 +258,6 @@ EndFunc   ;==>Dist
 Func IDAndSell()
 	RndSleep(1000)
 
-	;Open Xunlai
-	MoveTo(-20637, 7701, 100)
-	GoNearestNPCToCoords(-20637, 7701)
-
 	;GoToMerch
 	MoveTo(-18693, 10132, 100)
 	GoNearestNPCToCoords(-18693, 10132)
