@@ -90,6 +90,10 @@ Func CanSell($aitem)
 	$m = DllStructGetData($aitem, 'ModelID')
 	$lRarity = GetRarity($aitem)
 
+	If GetItemReq($aItem) > 10 Then
+		return True
+	EndIf
+
 	; Cele
 	For $i = 0 To UBound($CelestialWeapons) - 1
 		If $m = $CelestialWeapons[$i] Then
@@ -113,7 +117,6 @@ Func CanSell($aitem)
 			Return False
 		EndIf
 	Next
-
 
 	; Rarity based
 	If (($lRarity == $RARITY_Gold) And (GUICtrlRead($itemTypes[0]) <> $GUI_CHECKED)) Then Return False
