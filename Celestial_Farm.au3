@@ -118,11 +118,10 @@ Func MainLoop()
 	WEnd
 	Out("Flagging Hero")
 	CommandHero(1, 8946.49, -19282.36)
-	Sleep(1500)
+	Sleep(1000)
 	UseHeroSkill(1, 1, GetAgentByID())
-	Sleep(1500)
 	UseHeroSkill(1, 2, GetAgentByID())
-	Sleep(1500)
+	Sleep(4000)
 	UseHeroSkill(1, 3, GetAgentByID())
 	Out("Running to Farmspot")
 	MoveTo(7860, -17800)
@@ -183,11 +182,7 @@ Func MainLoop()
 		Return False
 	EndIf
 
-	Out("Waiting for SF")
-	While Not IsRecharged(2)
-		Sleep(50)
-	WEnd
-	UseSkillEx(2)
+	Sleep(500)
 	$enemy = DllStructGetData(GetBestTarget(), 'ID')
 	Out("Setting up EOE")
 	Out("Kill! >:O")
@@ -197,6 +192,9 @@ Func MainLoop()
 
 	$Timeout = 0
 	While Not GetIsDead($enemy)
+		If IsRecharged(2) And DllStructGetData(GetEffect(826), 'SkillID') <> 826 And GetEnergy(-2) >= 20 Then
+			UseSkillEx(2)
+		EndIf
 		Sleep(100)
 		$Timeout = $Timeout + 100
 		If $Timeout > 12000 Then ExitLoop
