@@ -150,7 +150,7 @@ Func MainLoop()
 	WEnd
 
 	Out("Running to Waypoint 3.")
-	MoveAndUseSF(1067, -14978)
+	MoveAndUseSF(1038, -14991)
 	If GetIsdead(-2) Then
 		HardLeave()
 		Return False
