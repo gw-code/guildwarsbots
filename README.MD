@@ -28,7 +28,7 @@ The Destroyer one is made from scratch.
 - Farms in NM
 
 ### Feather Farm
-**Merch not working implemented yet! Disable all pickups so it only picks up crests and feathers**
+**Merch not working/implemented yet! Disable all pickups so it only picks up crests and feathers**
 - Requires a Dervish with build: OgejkqrMLSmXfbaXNXTQ3lEYsXA
 - Farms in NM
 
