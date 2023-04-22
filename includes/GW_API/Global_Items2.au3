@@ -207,17 +207,7 @@ Global Const $ITEM_ID_ToT = 28434
 Global Const $ITEM_ID_monstrous_eye = 931
 Global Const $ITEM_ID_monstrous_claw = 923
 Global Const $ITEM_ID_monstrous_fang = 932
-Global $CelestialWeapons = [ _
-		942, _ ; Shild (Strength)
-		943, _ ; Shild (Tactic)
-		926, _ ; Cepter (Channeling, Earth)
-		1068, _ ; Longbow
-		790, _ ; Sword
-		761, _ ; Daggers
-		747, _ ; Axe
-		769, _ ; Hammer
-		785 _ ; Staff
-		]
+Global $CelestialWeapons[5] = [942,943,926,790,785]
 #EndRegion Special Drops
 
 #Region Stupid Drops
@@ -493,7 +483,7 @@ Global Const $ITEM_ID_Ruby_Djinn_Essence = 19187
 Global Const $ITEM_ID_Sapphire_Djinn_Essence = 19188
 Global Const $ITEM_ID_Sentient_Spore = 19198
 Global Const $ITEM_ID_Heket_Tongue = 19199
-Global Const $ITEM_ID_Diesa = 24353 
+Global Const $ITEM_ID_Diesa = 24353
 Global Const $ITEM_ID_Golden_Rin_Relic = 24354
 Global Const $ITEM_ID_Destroyer_Core = 27033
 Global Const $ITEM_ID_Incubus_Wing = 27034

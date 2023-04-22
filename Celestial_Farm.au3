@@ -1,20 +1,7 @@
-#Region Include
 #include "includes/GW_Api.au3"
-#EndRegion Include
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Change the next line to your character name:
-Global $strName = "Toons Sin"
-
-; Build Template:
-$skillbar = "OwJTYZ/8ZiHRn5AKu8uU4A3B6AA"
 
 Global $NQ = 216 ; Nahpui Quarter
 Global $WB = 239 ; Wajing Basar
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 Opt("GUIOnEventMode", 1)
 
@@ -42,7 +29,7 @@ GUISetState(@SW_SHOW)
 #Region Loops
 Out("Ready to start.")
 While Not $BotRunning
-	Sleep(500)
+	Sleep(100)
 WEnd
 
 AdlibRegister("TimeUpdater", 1000)
@@ -57,17 +44,18 @@ While 1
 		GUICtrlSetData($StartButton, "Start")
 		GUICtrlSetOnEvent($StartButton, "GuiButtonHandler")
 		While Not $BotRunning
-			Sleep(500)
+			Sleep(100)
 		WEnd
 		AdlibRegister("TimeUpdater", 1000)
 	EndIf
 	Travel($NQ)
 	KickAllHeroes()
-	LoadSkillTemplate($skillbar)
+	LoadSkillTemplate("OwJTYZ/8ZiHRn5AKu8uU4A3B6AA")
 	SwitchMode(1)
 	AddHero(11)
 	SetHeroAggression(1, 2)
-	Sleep(500)
+	LoadSkillTemplate("OQijEymM6MDbT8NGAAAAAAAAAA", 1)
+	Sleep(100)
 	EnableHeroSkillSlot(1, 1)
 	DisableHeroSkillSlot(1, 2)
 	DisableHeroSkillSlot(1, 3)
@@ -116,28 +104,31 @@ Func MainLoop()
 	While Not GetMapIsLoaded()
 		Sleep(100)
 	WEnd
-	Out("Flagging Hero")
+	Out("Fixing Hero")
+	UseHeroSkill(1, 1)
+	While DllStructGetData(GetEffect(1731, 1), 'SkillID') <> 1731
+		Sleep(100)
+	WEnd
 	CommandHero(1, 8946.49, -19282.36)
-	Sleep(1500)
-	UseHeroSkill(1, 1, GetAgentByID())
-	Sleep(1500)
 	UseHeroSkill(1, 2, GetAgentByID())
-	Sleep(1500)
+	While DllStructGetData(GetEffect(1574), 'SkillID') <> 1574
+		Sleep(100)
+	WEnd
 	UseHeroSkill(1, 3, GetAgentByID())
-	Out("Running to Farmspot")
+	Out("Running to Starting point.")
 	MoveTo(7860, -17800)
 	MoveTo(4000, -17000)
 	MoveTo(2700, -16500)
-	Out("Casting Run Skills")
+	Out("Casting Run Skills.")
 	UseSkillEx(1)
 	UseSkillEx(2)
 	UseSkillEx(3)
-	While GetEnergy(-2) <= 11
-		Sleep(500)
+	While GetEnergy(-2) <= 10
+		Sleep(100)
 	WEnd
 	UseSkillEx(4)
 
-	Out("Running to FarmRoute Waypoint 1")
+	Out("Running to Waypoint 1.")
 	MoveAndUseSF(-700, -16000)
 	MoveAndUseSF(-900, -15400)
 	MoveAndUseSF(-700, -14400)
@@ -146,7 +137,7 @@ Func MainLoop()
 		Return False
 	EndIf
 
-	Out("Running to FarmRoute Waypoint 2")
+	Out("Running to nWaypoint 2.")
 	MoveAndUseSF(800, -14500)
 	If GetIsdead(-2) Then
 		HardLeave()
@@ -160,20 +151,20 @@ Func MainLoop()
 		$preballingTimer = $preballingTimer - 100
 	WEnd
 
-	Out("Running to FarmRoute Waypoint 3")
+	Out("Running to Waypoint 3.")
 	MoveAndUseSF(1067, -14978)
 	If GetIsdead(-2) Then
 		HardLeave()
 		Return False
 	EndIf
 
-	Out("Balling Monks")
+	Out("Balling Monks.")
 	UseSkillEx(5)
 
 	Local $ballingtime = 2000
 	Sleep($ballingtime)
 
-	Out("Balling Necros")
+	Out("Balling Necros.")
 	MoveTo(400, -14200)
 	MoveTo(-400, -14200)
 
@@ -183,25 +174,24 @@ Func MainLoop()
 		Return False
 	EndIf
 
-	Out("Waiting for SF")
-	While Not IsRecharged(2)
-		Sleep(50)
-	WEnd
-	UseSkillEx(2)
+	Out("Waiting for SF.")
 	$enemy = DllStructGetData(GetBestTarget(), 'ID')
-	Out("Setting up EOE")
-	Out("Kill! >:O")
+
+	Out('Wooping ass.')
 	UseSkillEx(7, $enemy)
 	UseSkillEx(6)
 	UseSkillEx(8)
 
 	$Timeout = 0
 	While Not GetIsDead($enemy)
+		If IsRecharged(2) And DllStructGetData(GetEffect(826), 'SkillID') <> 826 And GetEnergy(-2) >= 20 Then
+			UseSkillEx(2)
+		EndIf
 		Sleep(100)
 		$Timeout = $Timeout + 100
-		If $Timeout > 12000 Then ExitLoop
+		If $Timeout > 10000 Then ExitLoop
 	WEnd
-	Sleep(250)
+	Sleep(100)
 
 	Out("Loot :D")
 	PickUpLoot()
@@ -312,7 +302,7 @@ Func PickUpLoot()
 		GUICtrlSetData($inventoryGold, GetGoldCharacter())
 	Next
 
-EndFunc   ;==>PickUpLootCW
+EndFunc   ;==>PickUpLoot
 
 Func GoNearestNPCToCoords($x, $y)
 	Do
@@ -324,9 +314,9 @@ Func GoNearestNPCToCoords($x, $y)
 	GoNPC($guy)
 	RndSleep(250)
 	Do
-		RndSleep(500)
+		RndSleep(100)
 		MoveTo(DllStructGetData($guy, 'X'), DllStructGetData($guy, 'Y'), 40)
-		RndSleep(500)
+		RndSleep(100)
 		GoNPC($guy)
 		RndSleep(250)
 		$Me = GetAgentByID(-2)
