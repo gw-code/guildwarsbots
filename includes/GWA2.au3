@@ -6007,14 +6007,16 @@ Func WaitMapLoading($aMapID = 0, $aDeadlock = 10000)
 	InitMapLoad()
 
 	Do
-		Sleep(200)
+		Sleep(100)
 		$lMapLoading = GetMapLoading()
 		If $lMapLoading == 2 Then $lDeadlock = TimerInit()
 		If TimerDiff($lDeadlock) > $aDeadlock And $aDeadlock > 0 Then Return False
 	Until $lMapLoading <> 2 And GetMapIsLoaded() And (GetMapID() = $aMapID Or $aMapID = 0)
 
-	RndSleep(1000)
-
+	Do 
+      Sleep(100)
+	Until GetAgentExists(-2)
+	Sleep(200)
 	Return True
 EndFunc   ;==>WaitMapLoading
 
