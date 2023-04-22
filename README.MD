@@ -1,11 +1,12 @@
 # GW Bots
+*Builds are autoloaded, I merely give these for reference when you don't have the skills*
 *PRs are very much welcome*
 ## Usage warning
 I am not responsible for sale of any rare items.
 When using bots, do not bring anything you don't want sold.
 
 ## Credits
-Code for these bots was found all over GitHub, I merely refactored stuff.
+Code for these bots was found all over GitHub, I merely gathered and refactored code.
 The Destroyer one is made from scratch.
 
 ## Bots
@@ -15,7 +16,6 @@ The Destroyer one is made from scratch.
 - Requires General Morgan with build: OQijEymM6MDbT8NGAAAAAAAAAA
 - Keeps all possible rare cele items, stackable items  and rare shields / swords (q8)
 - Farms in HM
-*Builds are autoloaded, I merely give these for reference when you don't have the skills*
 
 ### COF Farm
 - Requires a Dervish with build: OgCjkqqLrSihdftXYijhOXhX7XA
