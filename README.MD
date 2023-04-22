@@ -1,5 +1,5 @@
 # GW Bots
-
+*PRs are very much welcome*
 ## Usage warning
 I am not responsible for sale of any rare items.
 When using bots, do not bring anything you don't want sold.
@@ -32,4 +32,3 @@ The Destroyer one is made from scratch.
 - Requires a Dervish with build: OgejkqrMLSmXfbaXNXTQ3lEYsXA
 - Farms in NM
 
-# PRs are very much welcome!
