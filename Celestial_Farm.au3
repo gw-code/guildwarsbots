@@ -19,14 +19,12 @@ $dropCounterDictionary.Add("Celestial", "Celestial")
 Global $farmSpecific[4] = [$dropCounterDictionary.Keys]
 
 initGui($dropCounterDictionary)
-#Region Disable GUI
+
 DeactivateAllGUI()
-#EndRegion Disable GUI
 
 GUISetOnEvent($GUI_EVENT_CLOSE, "_exit")
 GUISetState(@SW_SHOW)
 
-#Region Loops
 Out("Ready to start.")
 While Not $BotRunning
 	Sleep(100)
@@ -137,7 +135,7 @@ Func MainLoop()
 		Return False
 	EndIf
 
-	Out("Running to nWaypoint 2.")
+	Out("Running to Waypoint 2.")
 	MoveAndUseSF(800, -14500)
 	If GetIsdead(-2) Then
 		HardLeave()
@@ -184,7 +182,7 @@ Func MainLoop()
 
 	$Timeout = 0
 	While Not GetIsDead($enemy)
-		If IsRecharged(2) And DllStructGetData(GetEffect(826), 'SkillID') <> 826 And GetEnergy(-2) >= 20 Then
+		If IsRecharged(2) And DllStructGetData(GetEffect(826), 'SkillID') <> 826 Then
 			UseSkillEx(2)
 		EndIf
 		Sleep(100)
@@ -275,6 +273,9 @@ Func PickUpLoot()
 	Local $lDeadlock
 	For $i = 1 To GetMaxAgents()
 		If GetIsDead(-2) Then Return
+		If IsRecharged(2) And DllStructGetData(GetEffect(826), 'SkillID') <> 826 Then
+			UseSkillEx(2)
+		EndIf
 		$lAgent = GetAgentByID($i)
 		If Not GetIsMovable($lAgent) Then ContinueLoop
 		If Not GetCanPickUp($lAgent) Then ContinueLoop
