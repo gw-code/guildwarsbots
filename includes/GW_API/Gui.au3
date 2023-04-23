@@ -134,12 +134,12 @@ Func GuiButtonHandler() ;Handle the bot's start/pause
 		Out("Initializing...")
 		Local $CharName = GUICtrlRead($CharInput)
 		If $CharName == "" Then
-			If Initialize(ProcessExists("gw.exe"), True, True) = False Then
+			If Initialize(ProcessExists("gw.exe"), False, True) = False Then
 				MsgBox(0, "Error", "Guild Wars is not running.")
 				Exit
 			EndIf
 		Else
-			If Initialize($CharName, True) = False Then
+			If Initialize($CharName, False) = False Then
 				MsgBox(0, "Error", "Could not find a Guild Wars client with a character named '" & $CharName & "'")
 				Exit
 			EndIf
