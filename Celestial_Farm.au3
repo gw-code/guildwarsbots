@@ -99,9 +99,7 @@ Func MainLoop()
 	While GetMapID() = $NQ
 		MoveTo(-21648, 13750)
 	WEnd
-	While Not GetMapIsLoaded()
-		Sleep(100)
-	WEnd
+	WaitMapLoading($WB)
 	Out("Fixing Hero")
 	UseHeroSkill(1, 1)
 	While DllStructGetData(GetEffect(1731, 1), 'SkillID') <> 1731
