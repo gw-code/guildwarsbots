@@ -160,13 +160,16 @@ Func MainLoop()
 	UseSkillEx(5)
 
 	Local $ballingtime = 2000
-	Sleep($ballingtime)
+	While $ballingtime > 0
+		StayAlive()
+		$ballingtime = $ballingtime - 100
+	WEnd
 
 	Out("Balling Necros.")
-	MoveTo(400, -14200)
-	MoveTo(-400, -14200)
+	MoveAndUseSF(400, -14200)
+	MoveAndUseSF(-400, -14200)
 
-	MoveTo(-958, -14500)
+	MoveAndUseSF(-958, -14500)
 	If GetIsdead(-2) Then
 		HardLeave()
 		Return False

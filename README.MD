@@ -12,8 +12,9 @@ The Destroyer one is made from scratch.
 ## Bots
 
 ### Celestial Farm
-- Requires an Assassin with build: OwJTYZ/8ZiHRn5AKu8uU4A3B6AA
+- Requires an Assassin with build: OwJTYZ/8ZiHRn5AKu8uU4A3B6AA & blessed armor
 - Requires General Morgan with build: OQijEymM6MDbT8NGAAAAAAAAAA
+- Morgan needs sup command rune on his headpiece
 - Keeps all possible rare cele items, stackable items  and rare shields / swords (q8)
 - Active weapon slot: ench +5e sword/spear + shield vs piercing dmg
 - Farms in HM
