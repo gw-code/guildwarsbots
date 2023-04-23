@@ -84,8 +84,8 @@ Func Setup()
 EndFunc   ;==>Setup
 
 Func Zone() ;Starts farm
-	Local $brand = GetNearestNPCToCoords(2480, 3586)
-	Local $rockFist = GetNearestNPCToCoords(-1826.00, 674)
+	Local $brand = GetAgentByPlayerNumber(6227)
+	Local $rockFist = GetAgentByPlayerNumber(6235)
 	If isInventoryFull() Then
 		GoToNPC($rockFist)
 		IdentItemToMerchant()
