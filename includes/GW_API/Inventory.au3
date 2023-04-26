@@ -30,7 +30,7 @@ Func CanPickUp($aitem)
 		EndIf
 	Next
 
-	if GetIsRareWeapon($aItem) Then Return True
+	If GetIsRareWeapon($aitem) Then Return True
 	If (($lRarity == $RARITY_Gold) And (GUICtrlRead($itemTypes[0]) == $GUI_CHECKED)) Then Return True
 	If (($lRarity == $RARITY_Purple) And (GUICtrlRead($itemTypes[1]) == $GUI_CHECKED)) Then Return True
 	If (($lRarity == $RARITY_Blue) And (GUICtrlRead($itemTypes[2]) == $GUI_CHECKED)) Then Return True
@@ -54,12 +54,16 @@ EndFunc   ;==>Sell
 
 Func SecureIDKit()
 	If FindIDKit() = 0 Then
-		If GetGoldCharacter() < 100 Then
-			WithdrawGold(100)
+		If GetGoldCharacter() < 500 Then
+			WithdrawGold(500)
 			Sleep(Random(200, 300))
 		EndIf
 		Do
-			BuyIDKit()
+			If GetMapID() = $MAP_ID_NOLANI Then
+				BuyItem(4, 1, 100)
+			Else
+				BuySuperiorIDKit()
+			EndIf
 			RndSleep(500)
 		Until FindIDKit() <> 0
 		RndSleep(500)
@@ -90,8 +94,8 @@ Func CanSell($aitem)
 	$m = DllStructGetData($aitem, 'ModelID')
 	$lRarity = GetRarity($aitem)
 
-	If GetItemReq($aItem) > 10 Then
-		return True
+	If GetItemReq($aitem) > 10 Then
+		Return True
 	EndIf
 
 	; Cele
@@ -101,7 +105,7 @@ Func CanSell($aitem)
 		EndIf
 	Next
 
-	if GetIsRareWeapon($aItem) Then Return False
+	If GetIsRareWeapon($aitem) Then Return False
 	; Special stuff
 	If ($q > 1 And $m <> 146) Then Return False
 	If $m > 21785 And $m < 21806 Then Return False
@@ -127,8 +131,8 @@ Func CanSell($aitem)
 EndFunc   ;==>CanSell
 
 ;~ Description: Returns max dmg of item.
-Func GetItemMaxDmg($aItem)
-	Local $lModString = GetModStruct(GetItemPtr($aItem))
+Func GetItemMaxDmg($aitem)
+	Local $lModString = GetModStruct(GetItemPtr($aitem))
 	Local $lPos = StringInStr($lModString, "A8A7") ; Weapon Damage
 	If $lPos = 0 Then $lPos = StringInStr($lModString, "C867") ; Energy (focus)
 	If $lPos = 0 Then $lPos = StringInStr($lModString, "B8A7") ; Armor (shield)
@@ -138,14 +142,14 @@ EndFunc   ;==>GetItemMaxDmg
 
 
 ;~ Description: Returns if rare weapon.
-Func GetIsRareWeapon($aItem)
-	Local $Attribute = GetItemAttribute($aItem)
-	Local $Requirement = GetItemReq($aItem)
-	Local $Damage = GetItemMaxDmg($aItem)
+Func GetIsRareWeapon($aitem)
+	Local $Attribute = GetItemAttribute($aitem)
+	Local $Requirement = GetItemReq($aitem)
+	Local $Damage = GetItemMaxDmg($aitem)
 	If $Attribute = 21 And $Requirement <= 8 And $Damage = 22 Then Return True
 	If $Attribute = 18 And $Requirement <= 8 And $Damage = 16 Then Return True
 	If $Attribute = 22 And $Requirement <= 8 And $Damage = 16 Then Return True
 	If $Attribute = 36 And $Requirement <= 8 And $Damage = 16 Then Return True
 	If $Attribute = 37 And $Requirement <= 8 And $Damage = 16 Then Return True
 	Return False
- EndFunc   ;==>GetIsRareWeapon
+EndFunc   ;==>GetIsRareWeapon
