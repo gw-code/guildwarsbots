@@ -5,6 +5,7 @@ Global Const $MAP_ID_COF = 560
 Global Const $MAP_ID_LONGEYE = 650
 Global Const $MAP_ID_CTC = 652
 Global Const $MAP_ID_GLINTS = 37
+Global Const $MAP_ID_NOLANI = 32
 
 ; === Dialogs ===
 Global Const $FIRST_DIALOG = 0x832105

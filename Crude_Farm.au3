@@ -5,10 +5,10 @@
 
 Opt("GUIOnEventMode", True)
 Opt("GUICloseOnESC", False)
-$title = "Destroyer Core Farmer"
-$Gui = GUICreate($title & " - Ranger Edition", 362, 420, -1, -1)
+$title = "Crude shield Farmer"
+$Gui = GUICreate($title & " - Ele Edition", 362, 420, -1, -1)
 Local $dropCounterDictionary = ObjCreate("Scripting.Dictionary")
-$dropCounterDictionary.Add($ITEM_ID_Destroyer_Core, "Dcores")
+$dropCounterDictionary.Add(330, "Crude Shields")
 
 Global $farmSpecific[1] = [$dropCounterDictionary.Keys]
 initGui($dropCounterDictionary)
@@ -64,40 +64,50 @@ Func MainLoop()
 		GUICtrlSetData($RunsCount, $Runs)
 		GUICtrlSetData($AvgTimeCount, AvgTime())
 	EndIf
-	Out("Returning to CTC.")
-	Travel($MAP_ID_CTC)
-	WaitMapLoading($MAP_ID_CTC)
+	Out("Returning to Nolani.")
+	Resign()
+	Sleep(Random(4000, 6000))
+	ReturnToOutpost()
+	WaitMapLoading($MAP_ID_NOLANI)
 EndFunc   ;==>MainLoop
 
 #EndRegion Loops
 
 #Region Bot init Functions
 Func Setup()
-	If GetMapID() <> $MAP_ID_CTC Then
-		Out("Traveling to CTC.")
-		Travel($MAP_ID_CTC)
+	If GetMapLoading() = 1 Then
+		Out("Traveling to Nolani.")
+		Resign()
+		Sleep(Random(4000, 6000))
+		ReturnToOutpost()
 	EndIf
-	WaitMapLoading($MAP_ID_CTC)
-	SwitchMode(0)
-	LoadSkillTemplate('OgcTcXs9ZiHRn5AiAiVE354Q4AA')
+	If GetMapID() <> $MAP_ID_NOLANI Then
+		Out("Traveling to Nolani.")
+		Travel($MAP_ID_NOLANI)
+	EndIf
+	WaitMapLoading($MAP_ID_NOLANI)
+	While GetMapLoading() <> 0
+		Sleep(50)
+	Wend
+	SwitchMode(1)
+	LoadSkillTemplate('OgNCkMzk8AtANZuYpwXFP0yA')
 	Zone()
-	$BoolInitResign = True
 EndFunc   ;==>Setup
 
 Func Zone() ;Starts farm
-	Local $brand = GetAgentByPlayerNumber(6227)
-	Local $rockFist = GetAgentByPlayerNumber(6235)
+	Local $merchant = GetAgentByPlayerNumber(2101)
 	If isInventoryFull() Then
-		GoToNPC($rockFist)
+		GoToNPC($merchant)
 		IdentItemToMerchant()
 		SellItemToMerchant()
 		CloseAllPanels()
-		GoToNPC($brand)
 	EndIf
-	GoToNPC($brand)
-	Out("Entering Glints.")
-	Dialog(0x86)
-	WaitMapLoading($MAP_ID_GLINTS)
+	EnterChallengeForeign()
+	Sleep(4000)
+
+	Out("Entering mission.")
+	WaitMapLoading($MAP_ID_NOLANI)
+
 	Return True
 EndFunc   ;==>Zone
 
@@ -105,106 +115,41 @@ EndFunc   ;==>Zone
 
 #Region Combat Functions
 Func AggroAndPrepare() ;Prepares players with enchants and aggro mobs
-	Out('Switching to staff.')
-	ChangeWeaponSet(2)
-	Out('Moving to sweet spot.')
-	MoveTo(-3327.01, 741.03)
-	Out('Waiting for all destroyers to arive.')
-	While Not GetIsDead(7)
-		Sleep(100)
-	WEnd
-	While GetInstanceUpTime() < 225000
-		If Not StayAlive() Then
-			Return False
-		EndIf
-	WEnd
-
-	While DllStructGetData(GetEffect(455), 'SkillID') == 455
-		Sleep(100)
-		StayAlive(1)
-	WEnd
-
-	Out('Balling destroyers.')
-	MoveSafely(-2676.40, 1735.90)
-	WaitAndStayAlive(2000)
-	MoveSafely(-2232.54, 3384.54)
-	WaitAndStayAlive(2000)
-	MoveSafely(-2253.28, 810.86)
-	WaitAndStayAlive(2000)
-	UseSkillEx(7)
-	Sleep(100)
+	UseSkillEx(1)
+	MoveTo('-2035.48', '11888.26')
+	$lever = GetNearestAgentToCoords('-674.80', '11801.90')
+	MoveTo(DllStructGetData($lever, 'X'), DllStructGetData($lever, 'Y'))
+	Sleep(1000)
+	TargetNearestItem()
+	UseSkillEx(5)
+	UseSkillEx(6)
+	ActionInteract()
+	MoveTo('-1358.42', '12391.72')
+	MoveTo('-268.30', '12143.46')
 EndFunc   ;==>AggroAndPrepare
-
-Func WaitAndStayAlive($timeout)
-	$timer = TimerInit()
-	Do
-		If Not StayAlive(1) Then
-			Return False
-		EndIf
-	Until TimerDiff($timer) >= $timeout
-EndFunc   ;==>WaitAndStayAlive
-
-Func MoveSafely($lDestX, $lDestY)
-	While ComputeDistance(DllStructGetData(GetAgentByID(), 'X'), DllStructGetData(GetAgentByID(), 'Y'), $lDestX, $lDestY) > 100
-		If Not StayAlive(1) Then
-			Return False
-		EndIf
-		If Not GetIsMoving(-2) Then
-			Move($lDestX, $lDestY)
-		EndIf
-	WEnd
-	Return True
-EndFunc   ;==>MoveSafely
-
-Func StayAlive($walk = 0, $dp = 1)
-	If IsRecharged(3) And GetEffectTimeRemaining(1031) < 3000 And GetEnergy(-2) >= 10 Then
-		UseSkillEx(3)
-	EndIf
-	If IsRecharged(2) And GetEffectTimeRemaining(826) < 3000 And GetEnergy(-2) >= 20 Then
-		If $dp == 1 Then
-			UseSkillEx(1)
-		EndIf
-		UseSkillEx(2)
-	EndIf
-	If IsRecharged(4) And GetEffectTimeRemaining(1028) < 3000 And GetEnergy(-2) >= 10 Then
-		UseSkillEx(4)
-	EndIf
-	If IsRecharged(5) And GetEffectTimeRemaining(2220) < 2000 And GetEnergy(-2) >= 10 Then
-		UseSkillEx(5)
-	EndIf
-	;energy plox
-	If (GetInstanceUpTime() < 210000 Or $walk == 0) And IsRecharged(7) Then
-		UseSkillEx(7)
-	EndIf
-	Sleep(25)
-	Return Not GetIsDead(-2)
-EndFunc   ;==>StayAlive
 
 Func Kill() ;Kills mobs
 	Out('Preparing to woop ass.')
-	ChangeWeaponSet(1)
 	If GetMapLoading() == 2 Then Disconnected()
 	If GetIsDead(-2) Then Return
-	$target = GetBestTarget()
-	$targetID = DllStructGetData($target, 'ID')
-	Out('Wooping ass.')
-	UseSkillEx(6, $targetID)
-	UseSkillEx(8)
 
 	$timer = TimerInit()
-	While GetNumberOfFoesInRangeOfAgent(-2, 2000) > 7 And DllStructGetData(GetEffect(450), 'SkillID') == 450 And Not GetIsDead(-2) And TimerDiff($timer) <= 12000
+	While GetNumberOfFoesInRangeOfAgent(-2, 3000) > 5 And TimerDiff($timer) <= 60000
 		If GetMapLoading() == 2 Then Disconnected()
 		If GetIsDead(-2) Then Return
-		If GetIsDead($targetID) Then
-			If Not isInventoryFull() Then PickUpLoot()
-			$target = GetBestTarget()
-			$targetID = DllStructGetData($target, 'ID')
-			MoveTo(DllStructGetData($target, 'X'), DllStructGetData($target, 'Y'))
+		If IsRecharged(5) And GetEffectTimeRemaining(165) < 5000 And GetEnergy(-2) >= 10 Then UseSkillEx(5)
+		If IsRecharged(6) And GetEffectTimeRemaining(1375) < 5000 And GetEnergy(-2) >= 10 Then
+			UseSkillEx(6)
 		EndIf
-		Attack(-1)
-		StayAlive(1, 0)
+		If IsRecharged(4) Then UseSkillEx(4)
+		If IsRecharged(3) Then UseSkillEx(3)
+		If IsRecharged(2) Then UseSkillEx(2)
+		If IsRecharged(8) Then
+			UseSkillEx(8)
+			UseSkillEx(7, -2, 500)
+		EndIf
 	WEnd
-	Sleep(100)
+	Sleep(1000)
 	If Not isInventoryFull() Then PickUpLoot()
 EndFunc   ;==>Kill
 
@@ -241,7 +186,8 @@ Func PickUpLoot()
 	GUICtrlSetData($storageGold, GetGoldStorage())
 	GUICtrlSetData($inventoryGold, GetGoldCharacter())
 	For $i = 1 To GetMaxAgents()
-		StayAlive(1,0)
+		If IsRecharged(5) And GetEffectTimeRemaining(165) < 5000 And GetEnergy(-2) >= 10 Then UseSkillEx(5)
+		If IsRecharged(6) And GetEffectTimeRemaining(1375) < 5000 And GetEnergy(-2) >= 10 Then UseSkillEx(6)
 		If GetMapLoading() == 2 Then Disconnected()
 		$lMe = GetAgentByID(-2)
 		If DllStructGetData($lMe, 'HP') <= 0.0 Then Return

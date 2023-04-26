@@ -176,7 +176,7 @@ Global Const $HEADER_CHANGE_GOLD = 0x7A	;Moves Gold (from chest to inventory, an
 Global Const $HEADER_MODE_SWITCH = 0x99	;Toggles hard- and normal mode
 ;GAME_CMSG_PARTY_ENTER_CHALLENGE
 Global Const $HEADER_MISSION_ENTER = 0xA3	;Enter a mission/challenge
-Global Const $HEADER_MISSION_FOREIGN_ENTER = 0xAB	;Enters a foreign mission/challenge (no idea honestly)
+Global Const $HEADER_MISSION_FOREIGN_ENTER = 0xA3	;Enters a foreign mission/challenge (no idea honestly)
 ;GAME_CMSG_PARTY_RETURN_TO_OUTPOST
 Global Const $HEADER_OUTPOST_RETURN = 0xA5	;Returns to outpost after /resign
 

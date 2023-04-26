@@ -54,12 +54,12 @@ EndFunc   ;==>Sell
 
 Func SecureIDKit()
 	If FindIDKit() = 0 Then
-		If GetGoldCharacter() < 500 Then
-			WithdrawGold(500)
+		If GetGoldCharacter() < 100 Then
+			WithdrawGold(100)
 			Sleep(Random(200, 300))
 		EndIf
 		Do
-			BuySuperiorIDKit()
+			BuyIDKit()
 			RndSleep(500)
 		Until FindIDKit() <> 0
 		RndSleep(500)
