@@ -141,10 +141,10 @@ Func Kill() ;Kills mobs
 		If IsRecharged(6) And GetEffectTimeRemaining(1375) < 5000 And GetEnergy(-2) >= 10 Then
 			UseSkillEx(6)
 		EndIf
-		If IsRecharged(4) Then UseSkillEx(4)
-		If IsRecharged(3) Then UseSkillEx(3)
-		If IsRecharged(2) Then UseSkillEx(2)
-		If IsRecharged(8) Then
+		If IsRecharged(4) And GetEnergy(-2) >= 10 Then UseSkillEx(4)
+		If IsRecharged(3) And GetEnergy(-2) >= 5 Then UseSkillEx(3)
+		If IsRecharged(2) And GetEnergy(-2) >= 5 Then UseSkillEx(2)
+		If IsRecharged(8) And GetEnergy(-2) >= 15 Then
 			UseSkillEx(8)
 			UseSkillEx(7, -2, 500)
 		EndIf
