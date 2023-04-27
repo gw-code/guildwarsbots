@@ -75,7 +75,8 @@ EndFunc   ;==>MainLoop
 
 #Region Bot init Functions
 Func Setup()
-	If GetMapLoading() = 1 Then
+	Out('Setup')
+	If GetMapLoading() == 1 Then
 		Out("Traveling to Nolani.")
 		Resign()
 		Sleep(Random(4000, 6000))
@@ -87,8 +88,9 @@ Func Setup()
 	EndIf
 	WaitMapLoading($MAP_ID_NOLANI)
 	While GetMapLoading() <> 0
+		Out('GetMapLoading')
 		Sleep(50)
-	Wend
+	WEnd
 	SwitchMode(1)
 	LoadSkillTemplate('OgNCkMzk8AtANZuYpwXFP0yA')
 	Zone()
@@ -97,17 +99,26 @@ EndFunc   ;==>Setup
 Func Zone() ;Starts farm
 	Local $merchant = GetAgentByPlayerNumber(2101)
 	If isInventoryFull() Then
+		Out('Merchant')
+		MoveTo(-1924.00, 14692.00)
 		GoToNPC($merchant)
 		IdentItemToMerchant()
 		SellItemToMerchant()
 		CloseAllPanels()
 	EndIf
+	Sleep(500)
 	EnterChallengeForeign()
 	Sleep(4000)
 
+
+
 	Out("Entering mission.")
 	WaitMapLoading($MAP_ID_NOLANI)
-
+	If GetMapLoading() <> 1 Then
+		EnterChallengeForeign()
+		Sleep(4000)
+		WaitMapLoading($MAP_ID_NOLANI)
+	EndIf
 	Return True
 EndFunc   ;==>Zone
 
@@ -115,18 +126,34 @@ EndFunc   ;==>Zone
 
 #Region Combat Functions
 Func AggroAndPrepare() ;Prepares players with enchants and aggro mobs
+	Out('Running to lever')
 	UseSkillEx(1)
-	MoveTo('-2035.48', '11888.26')
+	MoveTo('-1300.12', '11786.02')
 	$lever = GetNearestAgentToCoords('-674.80', '11801.90')
 	MoveTo(DllStructGetData($lever, 'X'), DllStructGetData($lever, 'Y'))
-	Sleep(1000)
+	Sleep(500)
 	TargetNearestItem()
 	UseSkillEx(5)
 	UseSkillEx(6)
 	ActionInteract()
-	MoveTo('-1358.42', '12391.72')
-	MoveTo('-268.30', '12143.46')
+	Out('Moving to Sweetspot')
+	MoveTo('-232', '11800')
+	;MoveSafely('-214.59', '10874.79')
 EndFunc   ;==>AggroAndPrepare
+
+Func MoveSafely($lDestX, $lDestY)
+	While ComputeDistance(DllStructGetData(GetAgentByID(), 'X'), DllStructGetData(GetAgentByID(), 'Y'), $lDestX, $lDestY) > 100
+		If GetMapLoading() == 2 Then Disconnected()
+		If GetIsDead(-2) Then Return
+		If IsRecharged(3) And GetEnergy(-2) >= 5 Then UseSkillEx(3)
+		If IsRecharged(5) And GetEffectTimeRemaining(165) < 5000 And GetEnergy(-2) >= 10 Then UseSkillEx(5)
+		If IsRecharged(6) And GetEffectTimeRemaining(1375) < 5000 And GetEnergy(-2) >= 10 Then UseSkillEx(6)
+		If Not GetIsMoving(-2) Then
+			Move($lDestX, $lDestY)
+		EndIf
+	WEnd
+	Return True
+EndFunc   ;==>MoveSafely
 
 Func Kill() ;Kills mobs
 	Out('Preparing to woop ass.')
@@ -134,13 +161,11 @@ Func Kill() ;Kills mobs
 	If GetIsDead(-2) Then Return
 
 	$timer = TimerInit()
-	While GetNumberOfFoesInRangeOfAgent(-2, 3000) > 5 And TimerDiff($timer) <= 60000
+	While GetNumberOfFoesInRangeOfAgent(-2, 1500) > 4 And TimerDiff($timer) <= 60000
 		If GetMapLoading() == 2 Then Disconnected()
 		If GetIsDead(-2) Then Return
 		If IsRecharged(5) And GetEffectTimeRemaining(165) < 5000 And GetEnergy(-2) >= 10 Then UseSkillEx(5)
-		If IsRecharged(6) And GetEffectTimeRemaining(1375) < 5000 And GetEnergy(-2) >= 10 Then
-			UseSkillEx(6)
-		EndIf
+		If IsRecharged(6) And GetEffectTimeRemaining(1375) < 5000 And GetEnergy(-2) >= 10 Then UseSkillEx(6)
 		If IsRecharged(4) And GetEnergy(-2) >= 10 Then UseSkillEx(4)
 		If IsRecharged(3) And GetEnergy(-2) >= 5 Then UseSkillEx(3)
 		If IsRecharged(2) And GetEnergy(-2) >= 5 Then UseSkillEx(2)
