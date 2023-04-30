@@ -133,11 +133,9 @@ Func MoveSafely($lDestX, $lDestY)
 	$blockedCount = 0
 	$aRandom = 100
 	While ComputeDistance(DllStructGetData(GetAgentByID(), 'X'), DllStructGetData(GetAgentByID(), 'Y'), $lDestX, $lDestY) > 100 And TimerDiff($moveTimer) < 30000
-		Out('SafeLoop')
 		If GetMapLoading() == 2 Then Disconnected()
 		If GetIsDead(-2) Then Return
 		If Mod(TimerDiff($moveTimer), 2500) < 5 Then
-			Out('ping stuck')
 			SendChat("stuck", "/")
 		EndIf
 		If IsRecharged(5) And GetEffectTimeRemaining(165) < 5000 And GetEnergy(-2) >= 10 Then UseSkillWhileCheckingForMs(5)
@@ -148,7 +146,6 @@ Func MoveSafely($lDestX, $lDestY)
 		EndIf
 		; Move backward since we almost certainly are closed in
 		If DllStructGetData(GetAgentByID(), 'MoveX') == 0 And DllStructGetData(GetAgentByID(), 'MoveY') == 0 Then
-			Out('Blocked')
 			$blockedCount += 1
 			If Mod($blockedCount, 50) < 5 Then
 				Move(DllStructGetData(GetAgentByID(), 'X') + Random(-$aRandom, $aRandom), DllStructGetData(GetAgentByID(), 'Y') + Random(0, $aRandom), 0)
