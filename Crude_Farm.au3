@@ -56,8 +56,8 @@ Func MainLoop()
 		$Fails += 1
 		Out("Run failed: Dead.")
 		GUICtrlSetData($FailsCount, $Fails)
-		GUICtrlSetData($AvgTimeCount, AvgTime())
 		$died = 1
+		Sleep(2000)
 	Else
 		$Runs += 1
 		Out("Run completed in " & GetTime() & ".")
@@ -65,32 +65,22 @@ Func MainLoop()
 		GUICtrlSetData($AvgTimeCount, AvgTime())
 	EndIf
 	Out("Returning to Nolani.")
-	Resign()
-	Sleep(Random(4000, 6000))
-	ReturnToOutpost()
+	ZoneMap($MAP_ID_NOLANI)
+	Do
+		Sleep(100)
+	Until GetMapLoading() == 0
 	WaitMapLoading($MAP_ID_NOLANI)
 EndFunc   ;==>MainLoop
-
 #EndRegion Loops
 
 #Region Bot init Functions
 Func Setup()
 	Out('Setup')
-	If GetMapLoading() == 1 Then
-		Out("Traveling to Nolani.")
-		Resign()
-		Sleep(Random(4000, 6000))
-		ReturnToOutpost()
-	EndIf
 	If GetMapID() <> $MAP_ID_NOLANI Then
 		Out("Traveling to Nolani.")
 		Travel($MAP_ID_NOLANI)
 	EndIf
 	WaitMapLoading($MAP_ID_NOLANI)
-	While GetMapLoading() <> 0
-		Out('GetMapLoading')
-		Sleep(50)
-	WEnd
 	SwitchMode(1)
 	LoadSkillTemplate('OgNCkMzk8AtANZuYpwXFP0yA')
 	Zone()
@@ -101,6 +91,7 @@ Func Zone() ;Starts farm
 	If isInventoryFull() Then
 		Out('Merchant')
 		MoveTo(-1924.00, 14692.00)
+		Sleep(500)
 		GoToNPC($merchant)
 		IdentItemToMerchant()
 		SellItemToMerchant()
@@ -109,12 +100,9 @@ Func Zone() ;Starts farm
 	Sleep(500)
 	EnterChallengeForeign()
 	Sleep(4000)
-
-
-
 	Out("Entering mission.")
 	WaitMapLoading($MAP_ID_NOLANI)
-	If GetMapLoading() <> 1 Then
+	If GetMapLoading() == 0 Then
 		EnterChallengeForeign()
 		Sleep(4000)
 		WaitMapLoading($MAP_ID_NOLANI)
@@ -137,41 +125,81 @@ Func AggroAndPrepare() ;Prepares players with enchants and aggro mobs
 	UseSkillEx(6)
 	ActionInteract()
 	Out('Moving to Sweetspot')
-	MoveTo('-232', '11800')
-	;MoveSafely('-214.59', '10874.79')
+	MoveTo('-160', '11800')
 EndFunc   ;==>AggroAndPrepare
 
 Func MoveSafely($lDestX, $lDestY)
-	While ComputeDistance(DllStructGetData(GetAgentByID(), 'X'), DllStructGetData(GetAgentByID(), 'Y'), $lDestX, $lDestY) > 100
+	$moveTimer = TimerInit()
+	$blockedCount = 0
+	$aRandom = 100
+	While ComputeDistance(DllStructGetData(GetAgentByID(), 'X'), DllStructGetData(GetAgentByID(), 'Y'), $lDestX, $lDestY) > 100 And TimerDiff($moveTimer) < 30000
+		Out('SafeLoop')
 		If GetMapLoading() == 2 Then Disconnected()
 		If GetIsDead(-2) Then Return
-		If IsRecharged(3) And GetEnergy(-2) >= 5 Then UseSkillEx(3)
-		If IsRecharged(5) And GetEffectTimeRemaining(165) < 5000 And GetEnergy(-2) >= 10 Then UseSkillEx(5)
-		If IsRecharged(6) And GetEffectTimeRemaining(1375) < 5000 And GetEnergy(-2) >= 10 Then UseSkillEx(6)
+		If Mod(TimerDiff($moveTimer), 2500) < 5 Then
+			Out('ping stuck')
+			SendChat("stuck", "/")
+		EndIf
+		If IsRecharged(5) And GetEffectTimeRemaining(165) < 5000 And GetEnergy(-2) >= 10 Then UseSkillWhileCheckingForMs(5)
+		If IsRecharged(6) And GetEffectTimeRemaining(1375) < 5000 And GetEnergy(-2) >= 10 Then UseSkillWhileCheckingForMs(6)
 		If Not GetIsMoving(-2) Then
-			Move($lDestX, $lDestY)
+			Move($lDestX, $lDestY, 0)
+			Sleep(100)
+		EndIf
+		; Move backward since we almost certainly are closed in
+		If DllStructGetData(GetAgentByID(), 'MoveX') == 0 And DllStructGetData(GetAgentByID(), 'MoveY') == 0 Then
+			Out('Blocked')
+			$blockedCount += 1
+			If Mod($blockedCount, 50) < 5 Then
+				Move(DllStructGetData(GetAgentByID(), 'X') + Random(-$aRandom, $aRandom), DllStructGetData(GetAgentByID(), 'Y') + Random(0, $aRandom), 0)
+			EndIf
+			If $blockedCount > 100 And IsRecharged(8) And IsRecharged(7) And GetEnergy(-2) >= 15 Then
+				UseSkillWhileCheckingForMs(8)
+				UseSkillWhileCheckingForMs(7, -2, 500)
+			EndIf
+			Sleep(1000)
 		EndIf
 	WEnd
 	Return True
 EndFunc   ;==>MoveSafely
+
+Func UseSkillWhileCheckingForMs($skillId, $target = -2, $timeOut = 3000)
+	If IsRecharged(3) And GetEnergy(-2) >= 5 And GetNumberOfFoesInRangeOfAgentCastingMS(2000) > 0 Then UseSkillEx(3)
+	UseSkillEx($skillId, $target, $timeOut)
+	Return
+EndFunc   ;==>UseSkillWhileCheckingForMs
 
 Func Kill() ;Kills mobs
 	Out('Preparing to woop ass.')
 	If GetMapLoading() == 2 Then Disconnected()
 	If GetIsDead(-2) Then Return
 
+	$target = GetNearestEnemyToAgent()
+	$targetID = DllStructGetData($target, 'ID')
+
+	$scattered = False
+	$scatteredPrinted = False
 	$timer = TimerInit()
-	While GetNumberOfFoesInRangeOfAgent(-2, 1500) > 4 And TimerDiff($timer) <= 60000
+	While GetNumberOfAxeFoesInRangeOfAgent(-2, 2000) > 0 And TimerDiff($timer) <= 65000
 		If GetMapLoading() == 2 Then Disconnected()
 		If GetIsDead(-2) Then Return
-		If IsRecharged(5) And GetEffectTimeRemaining(165) < 5000 And GetEnergy(-2) >= 10 Then UseSkillEx(5)
-		If IsRecharged(6) And GetEffectTimeRemaining(1375) < 5000 And GetEnergy(-2) >= 10 Then UseSkillEx(6)
-		If IsRecharged(4) And GetEnergy(-2) >= 10 Then UseSkillEx(4)
-		If IsRecharged(3) And GetEnergy(-2) >= 5 Then UseSkillEx(3)
-		If IsRecharged(2) And GetEnergy(-2) >= 5 Then UseSkillEx(2)
-		If IsRecharged(8) And GetEnergy(-2) >= 15 Then
-			UseSkillEx(8)
-			UseSkillEx(7, -2, 500)
+		If $scattered And Not $scatteredPrinted Then
+			Out('Resuming Fight')
+			$scatteredPrinted = True
+		EndIf
+		If IsRecharged(5) And GetEffectTimeRemaining(165) < 5000 And GetEnergy(-2) >= 10 Then UseSkillWhileCheckingForMs(5)
+		If IsRecharged(6) And GetEffectTimeRemaining(1375) < 5000 And GetEnergy(-2) >= 10 Then UseSkillWhileCheckingForMs(6)
+		If IsRecharged(4) And GetEnergy(-2) >= 10 And $scattered Then UseSkillWhileCheckingForMs(4)
+		If IsRecharged(2) And GetEnergy(-2) >= 5 Then UseSkillWhileCheckingForMs(2)
+		If IsRecharged(8) And IsRecharged(7) And GetEnergy(-2) >= 15 Then
+			UseSkillWhileCheckingForMs(8)
+			UseSkillWhileCheckingForMs(7, -2, 500)
+		EndIf
+		If Not $scattered Then
+			Sleep(500)
+			MoveSafely('-425.58', '11272.90')
+			$scattered = True
+			Out('Moved to final spot')
 		EndIf
 	WEnd
 	Sleep(1000)
@@ -179,7 +207,7 @@ Func Kill() ;Kills mobs
 EndFunc   ;==>Kill
 
 #Region Player & Mobs Interactions Functions
-Func GetNumberOfFoesInRangeOfAgent($aAgent = -2, $aRange = 1250)
+Func GetNumberOfAxeFoesInRangeOfAgent($aAgent = -2, $aRange = 1250)
 	If GetMapLoading() == 2 Then Disconnected()
 	Local $lAgent, $lDistance
 	Local $lCount = 0, $lAgentArray = GetAgentArray(0xDB)
@@ -194,10 +222,33 @@ Func GetNumberOfFoesInRangeOfAgent($aAgent = -2, $aRange = 1250)
 		If BitAND(DllStructGetData($lAgent, 'Effects'), 0x0010) > 0 Then ContinueLoop
 		$lDistance = GetDistance($lAgent)
 		If $lDistance > $aRange Then ContinueLoop
+		If DllStructGetData($lAgent, 'WeaponType') <> 7 Then ContinueLoop
 		$lCount += 1
 	Next
 	Return $lCount
-EndFunc   ;==>GetNumberOfFoesInRangeOfAgent
+EndFunc   ;==>GetNumberOfAxeFoesInRangeOfAgent
+
+Func GetNumberOfFoesInRangeOfAgentCastingMS($aAgent = -2, $aRange = 1250)
+	If GetMapLoading() == 2 Then Disconnected()
+	Local $lAgent, $lDistance
+	Local $lCount = 0, $lAgentArray = GetAgentArray(0xDB)
+	If Not IsDllStruct($aAgent) Then $aAgent = GetAgentByID($aAgent)
+	For $i = 0 To $lAgentArray[0]
+		$lAgent = $lAgentArray[$i]
+		If BitAND(DllStructGetData($lAgent, 'typemap'), 262144) Then
+			If StringLeft(GetAgentName($lAgent), 7) <> "Servant" Then ContinueLoop
+		EndIf
+		If DllStructGetData($lAgent, 'Allegiance') <> 3 Then ContinueLoop
+		If DllStructGetData($lAgent, 'HP') <= 0 Then ContinueLoop
+		If BitAND(DllStructGetData($lAgent, 'Effects'), 0x0010) > 0 Then ContinueLoop
+		$lDistance = GetDistance($lAgent)
+		If $lDistance > $aRange Then ContinueLoop
+		If DllStructGetData($lAgent, 'Skill') <> 192 Then ContinueLoop
+		$lCount += 1
+	Next
+	Return $lCount
+EndFunc   ;==>GetNumberOfFoesInRangeOfAgentCastingMS
+
 #EndRegion Player & Mobs Interactions Functions
 #EndRegion Combat Functions
 
@@ -211,8 +262,8 @@ Func PickUpLoot()
 	GUICtrlSetData($storageGold, GetGoldStorage())
 	GUICtrlSetData($inventoryGold, GetGoldCharacter())
 	For $i = 1 To GetMaxAgents()
-		If IsRecharged(5) And GetEffectTimeRemaining(165) < 5000 And GetEnergy(-2) >= 10 Then UseSkillEx(5)
-		If IsRecharged(6) And GetEffectTimeRemaining(1375) < 5000 And GetEnergy(-2) >= 10 Then UseSkillEx(6)
+		If IsRecharged(5) And GetEffectTimeRemaining(165) < 5000 And GetEnergy(-2) >= 10 Then UseSkillWhileCheckingForMs(5)
+		If IsRecharged(6) And GetEffectTimeRemaining(1375) < 5000 And GetEnergy(-2) >= 10 Then UseSkillWhileCheckingForMs(6)
 		If GetMapLoading() == 2 Then Disconnected()
 		$lMe = GetAgentByID(-2)
 		If DllStructGetData($lMe, 'HP') <= 0.0 Then Return
