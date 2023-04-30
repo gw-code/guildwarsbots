@@ -155,7 +155,7 @@ Func MoveSafely($lDestX, $lDestY)
 			EndIf
 			If $blockedCount > 100 And IsRecharged(8) And IsRecharged(7) And GetEnergy(-2) >= 15 Then
 				UseSkillWhileCheckingForMs(8)
-				UseSkillWhileCheckingForMs(7, -2, 500)
+				UseSkillEx(7, -2, 500)
 			EndIf
 			Sleep(1000)
 		EndIf
@@ -193,7 +193,7 @@ Func Kill() ;Kills mobs
 		If IsRecharged(2) And GetEnergy(-2) >= 5 Then UseSkillWhileCheckingForMs(2)
 		If IsRecharged(8) And IsRecharged(7) And GetEnergy(-2) >= 15 Then
 			UseSkillWhileCheckingForMs(8)
-			UseSkillWhileCheckingForMs(7, -2, 500)
+			UseSkillEx(7, -2, 500)
 		EndIf
 		If Not $scattered Then
 			Sleep(500)
