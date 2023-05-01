@@ -16,7 +16,8 @@ $dropCounterDictionary.Add($ITEM_ID_amber, "Amber")
 $dropCounterDictionary.Add($ITEM_ID_ruby, "Ruby")
 $dropCounterDictionary.Add("Celestial", "Celestial")
 
-Global $farmSpecific[4] = [$dropCounterDictionary.Keys]
+Local $dropKeys = $dropCounterDictionary.Keys
+_ArrayConcatenate($wontSell, $dropKeys)
 
 initGui($dropCounterDictionary)
 

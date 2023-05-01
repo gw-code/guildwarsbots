@@ -23,7 +23,6 @@ EndFunc   ;==>_PointerToStringW
 Func CanPickUp($aitem)
 	$m = DllStructGetData($aitem, 'ModelID')
 	$lRarity = GetRarity($aitem)
-	_ArrayConcatenate($wontSell, $farmSpecific)
 	For $i = 0 To UBound($wontSell) - 1
 		If ($m = $wontSell[$i]) Then
 			Return True
@@ -104,7 +103,7 @@ Func CanSell($aitem)
 			Return False
 		EndIf
 	Next
-
+	
 	If GetIsRareWeapon($aitem) Then Return False
 	; Special stuff
 	If ($q > 1 And $m <> 146) Then Return False
@@ -112,10 +111,7 @@ Func CanSell($aitem)
 	If $m = 146 And DllStructGetData($aitem, "ExtraId") > 9 Then ;Dyes
 		Return False
 	EndIf
-
-	; Normal stuff
-	_ArrayConcatenate($wontSell, $farmSpecific)
-
+	
 	For $i = 0 To UBound($wontSell) - 1
 		If ($m = $wontSell[$i]) Then
 			Return False

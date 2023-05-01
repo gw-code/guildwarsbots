@@ -10,7 +10,9 @@ $Gui = GUICreate($title & " - Ranger Edition", 362, 420, -1, -1)
 Local $dropCounterDictionary = ObjCreate("Scripting.Dictionary")
 $dropCounterDictionary.Add($ITEM_ID_Destroyer_Core, "Dcores")
 
-Global $farmSpecific[1] = [$dropCounterDictionary.Keys]
+Local $dropKeys = $dropCounterDictionary.Keys
+_ArrayConcatenate($wontSell, $dropKeys)
+
 initGui($dropCounterDictionary)
 
 #Region Disable GUI

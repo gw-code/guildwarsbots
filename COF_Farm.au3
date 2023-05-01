@@ -14,7 +14,9 @@ $dropCounterDictionary.Add($ITEM_ID_DUST, "Dust")
 $dropCounterDictionary.Add($ITEM_ID_Golden_Rin_Relic, "Rin")
 $dropCounterDictionary.Add($ITEM_ID_Diesa, "Diesa")
 
-Global $farmSpecific[4] = [$dropCounterDictionary.Keys]
+Local $dropKeys = $dropCounterDictionary.Keys
+_ArrayConcatenate($wontSell, $dropKeys)
+
 initGui($dropCounterDictionary)
 
 $TakeBless = GUICtrlCreateCheckbox("Take Blessing", 180, 248, 110, 17)

@@ -10,7 +10,9 @@ $Gui = GUICreate($title & " - Ele Edition", 362, 420, -1, -1)
 Local $dropCounterDictionary = ObjCreate("Scripting.Dictionary")
 $dropCounterDictionary.Add(330, "Crude Shields")
 
-Global $farmSpecific[1] = [$dropCounterDictionary.Keys]
+Local $dropKeys = $dropCounterDictionary.Keys
+_ArrayConcatenate($wontSell, $dropKeys)
+
 initGui($dropCounterDictionary)
 
 #Region Disable GUI
@@ -75,7 +77,6 @@ EndFunc   ;==>MainLoop
 
 #Region Bot init Functions
 Func Setup()
-	Out('Setup')
 	If GetMapID() <> $MAP_ID_NOLANI Then
 		Out("Traveling to Nolani.")
 		Travel($MAP_ID_NOLANI)
@@ -90,12 +91,11 @@ Func Zone() ;Starts farm
 	Local $merchant = GetAgentByPlayerNumber(2101)
 	If isInventoryFull() Then
 		Out('Merchant')
-		MoveTo(-1924.00, 14692.00)
+		MoveTo(71.89, 16484.79)
 		Sleep(500)
 		GoToNPC($merchant)
 		IdentItemToMerchant()
 		SellItemToMerchant()
-		CloseAllPanels()
 	EndIf
 	Sleep(500)
 	EnterChallengeForeign()
@@ -135,6 +135,7 @@ Func MoveSafely($lDestX, $lDestY)
 	While ComputeDistance(DllStructGetData(GetAgentByID(), 'X'), DllStructGetData(GetAgentByID(), 'Y'), $lDestX, $lDestY) > 100 And TimerDiff($moveTimer) < 30000
 		If GetMapLoading() == 2 Then Disconnected()
 		If GetIsDead(-2) Then Return
+		If IsRecharged(3) And GetEnergy(-2) >= 5 And GetNumberOfFoesInRangeOfAgentCastingMS(2000) > 0 Then UseSkillEx(3)
 		If Mod(TimerDiff($moveTimer), 2500) < 5 Then
 			SendChat("stuck", "/")
 		EndIf
@@ -148,7 +149,7 @@ Func MoveSafely($lDestX, $lDestY)
 		If DllStructGetData(GetAgentByID(), 'MoveX') == 0 And DllStructGetData(GetAgentByID(), 'MoveY') == 0 Then
 			$blockedCount += 1
 			If Mod($blockedCount, 50) < 5 Then
-				Move(DllStructGetData(GetAgentByID(), 'X') + Random(-$aRandom, $aRandom), DllStructGetData(GetAgentByID(), 'Y') + Random(0, $aRandom), 0)
+				Move(DllStructGetData(GetAgentByID(), 'X') + Random(-$aRandom, $aRandom), DllStructGetData(GetAgentByID(), 'Y') + Random(25, $aRandom), 0)
 			EndIf
 			If $blockedCount > 100 And IsRecharged(8) And IsRecharged(7) And GetEnergy(-2) >= 15 Then
 				UseSkillWhileCheckingForMs(8)
@@ -180,6 +181,7 @@ Func Kill() ;Kills mobs
 	While GetNumberOfAxeFoesInRangeOfAgent(-2, 2000) > 0 And TimerDiff($timer) <= 65000
 		If GetMapLoading() == 2 Then Disconnected()
 		If GetIsDead(-2) Then Return
+		If IsRecharged(3) And GetEnergy(-2) >= 5 And GetNumberOfFoesInRangeOfAgentCastingMS(2000) > 0 Then UseSkillEx(3)
 		If $scattered And Not $scatteredPrinted Then
 			Out('Resuming Fight')
 			$scatteredPrinted = True
@@ -259,6 +261,7 @@ Func PickUpLoot()
 	GUICtrlSetData($storageGold, GetGoldStorage())
 	GUICtrlSetData($inventoryGold, GetGoldCharacter())
 	For $i = 1 To GetMaxAgents()
+		If IsRecharged(3) And GetEnergy(-2) >= 5 And GetNumberOfFoesInRangeOfAgentCastingMS(2000) > 0 Then UseSkillEx(3)
 		If IsRecharged(5) And GetEffectTimeRemaining(165) < 5000 And GetEnergy(-2) >= 10 Then UseSkillWhileCheckingForMs(5)
 		If IsRecharged(6) And GetEffectTimeRemaining(1375) < 5000 And GetEnergy(-2) >= 10 Then UseSkillWhileCheckingForMs(6)
 		If GetMapLoading() == 2 Then Disconnected()
