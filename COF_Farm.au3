@@ -128,7 +128,7 @@ Func SetUpFastWay() ;Setup resign and starts farm
 	RndSleep(GetPing() + 250)
 	Dialog($SECOND_DIALOG)
 	WaitMapLoading($MAP_ID_COF)
-	Move(-19300, -8250)
+	Move(-19300, -8250, 0)
 	RndSleep(2500)
 	WaitMapLoading($MAP_ID_DOOMLORE)
 	RndSleep(100)

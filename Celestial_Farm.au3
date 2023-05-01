@@ -209,7 +209,7 @@ Func MoveAndUseSF($lDestX, $lDestY)
 			Return False
 		EndIf
 		If Not GetIsMoving(-2) Then
-			Move($lDestX, $lDestY)
+			Move($lDestX, $lDestY, 0)
 		EndIf
 	WEnd
 	Return True

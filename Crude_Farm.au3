@@ -132,7 +132,7 @@ Func MoveSafely($lDestX, $lDestY)
 	$moveTimer = TimerInit()
 	$blockedCount = 0
 	$aRandom = 100
-	While ComputeDistance(DllStructGetData(GetAgentByID(), 'X'), DllStructGetData(GetAgentByID(), 'Y'), $lDestX, $lDestY) > 100 And TimerDiff($moveTimer) < 30000
+	While ComputeDistance(DllStructGetData(GetAgentByID(), 'X'), DllStructGetData(GetAgentByID(), 'Y'), $lDestX, $lDestY) > 100 And TimerDiff($moveTimer) < 20000
 		If GetMapLoading() == 2 Then Disconnected()
 		If GetIsDead(-2) Then Return
 		If IsRecharged(3) And GetEnergy(-2) >= 5 And GetNumberOfFoesInRangeOfAgentCastingMS(2000) > 0 Then UseSkillEx(3)
@@ -151,7 +151,7 @@ Func MoveSafely($lDestX, $lDestY)
 			If Mod($blockedCount, 50) < 5 Then
 				Move(DllStructGetData(GetAgentByID(), 'X') + Random(-$aRandom, $aRandom), DllStructGetData(GetAgentByID(), 'Y') + Random(25, $aRandom), 0)
 			EndIf
-			If $blockedCount > 100 And IsRecharged(8) And IsRecharged(7) And GetEnergy(-2) >= 15 Then
+			If $blockedCount > 5 And IsRecharged(8) And IsRecharged(7) And GetEnergy(-2) >= 15 Then
 				UseSkillWhileCheckingForMs(8)
 				UseSkillEx(7, -2, 500)
 			EndIf
@@ -178,7 +178,7 @@ Func Kill() ;Kills mobs
 	$scattered = False
 	$scatteredPrinted = False
 	$timer = TimerInit()
-	While GetNumberOfAxeFoesInRangeOfAgent(-2, 2000) > 0 And TimerDiff($timer) <= 65000
+	While GetNumberOfAxeFoesInRangeOfAgent(-2, 2500) > 0 And TimerDiff($timer) <= 65000
 		If GetMapLoading() == 2 Then Disconnected()
 		If GetIsDead(-2) Then Return
 		If IsRecharged(3) And GetEnergy(-2) >= 5 And GetNumberOfFoesInRangeOfAgentCastingMS(2000) > 0 Then UseSkillEx(3)

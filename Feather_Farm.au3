@@ -87,7 +87,7 @@ EndFunc   ;==>Setup
 Func SetUpFastWay()
 	Out("Setting up resign")
 	Zone()
-	Move(10970, -13360)
+	Move(10970, -13360, 0)
 	WaitMapLoading($Outpost_ID)
 	Return True
 EndFunc   ;==>SetUpFastWay
@@ -151,7 +151,7 @@ Func Zone_Fast_Way()
 	Do
 		MoveTo(17171, 17331)
 		PingSleep()
-		Move(16800, 17500)
+		Move(16800, 17500, 0)
 		Sleep(5000)
 		WaitMapLoading($Explorable_ID)
 	Until GetMapID() <> $LL
@@ -166,7 +166,7 @@ Func Zone()
 		MoveTo(18127, 11740)
 		MoveTo(19196, 13149)
 		MoveTo(17288, 17243)
-		Move(16800, 17550)
+		Move(16800, 17550, 0)
 		WaitMapLoading($Explorable_ID)
 		Return
 	EndIf
@@ -174,7 +174,7 @@ Func Zone()
 		MoveTo(20556, 11582)
 		MoveTo(19196, 13149)
 		MoveTo(17288, 17243)
-		Move(16800, 17550)
+		Move(16800, 17550, 0)
 		WaitMapLoading($Explorable_ID)
 		Return
 	EndIf
@@ -182,13 +182,13 @@ Func Zone()
 		MoveTo(17912, 13531)
 		MoveTo(19196, 13149)
 		MoveTo(17288, 17243)
-		Move(16800, 17550)
+		Move(16800, 17550, 0)
 		WaitMapLoading($Explorable_ID)
 		Return
 	EndIf
 	MoveTo(19196, 13149)
 	MoveTo(17288, 17243)
-	Move(16800, 17550)
+	Move(16800, 17550, 0)
 	WaitMapLoading($Explorable_ID)
 EndFunc   ;==>Zone
 
@@ -196,7 +196,7 @@ Func MoveRun($DestX, $DestY)
 	If GetMapLoading() == 2 Then Disconnected()
 	If GetIsDead(-2) Then Return
 	Local $Me
-	Move($DestX, $DestY)
+	Move($DestX, $DestY, 0)
 	Do
 		If GetMapLoading() == 2 Then Disconnected()
 		If IsRecharged(6) Then UseSkillEx(6)
@@ -206,7 +206,7 @@ Func MoveRun($DestX, $DestY)
 			If GetEffectTimeRemaining(1516) <= 0 Then UseSkillEx(8)
 		EndIf
 		If GetIsDead(-2) Then Return
-		If DllStructGetData($Me, 'MoveX') == 0 Or DllStructGetData($Me, 'MoveY') == 0 Then Move($DestX, $DestY)
+		If DllStructGetData($Me, 'MoveX') == 0 Or DllStructGetData($Me, 'MoveY') == 0 Then Move($DestX, $DestY, 0)
 		RndSleep(250)
 	Until ComputeDistance(DllStructGetData($Me, 'X'), DllStructGetData($Me, 'Y'), $DestX, $DestY) < 250
 EndFunc   ;==>MoveRun
@@ -218,7 +218,7 @@ Func MoveKill($DestX, $DestY, $aWaitForSettle = True)
 	Local $Angle
 	Local $lStuckCount = 0
 	Local $Blocked = 0
-	Move($DestX, $DestY)
+	Move($DestX, $DestY, 0)
 	Do
 		If GetMapLoading() == 2 Then Disconnected()
 		If GetIsDead(-2) Then Return
@@ -237,13 +237,13 @@ Func MoveKill($DestX, $DestY, $aWaitForSettle = True)
 		If DllStructGetData($Me, 'MoveX') == 0 Or DllStructGetData($Me, 'MoveY') == 0 Then
 			$Blocked += 1
 			If $Blocked <= 5 Then
-				Move($DestX, $DestY)
+				Move($DestX, $DestY, 0)
 			Else
 				$Me = GetAgentByID(-2)
 				$Angle += 40
-				Move(DllStructGetData($Me, 'X') + 300 * Sin($Angle), DllStructGetData($Me, 'Y') + 300 * Cos($Angle))
+				Move(DllStructGetData($Me, 'X') + 300 * Sin($Angle), DllStructGetData($Me, 'Y') + 300 * Cos($Angle), 0)
 				Sleep(2000)
-				Move($DestX, $DestY)
+				Move($DestX, $DestY, 0)
 			EndIf
 		EndIf
 		$lStuckCount += 1
