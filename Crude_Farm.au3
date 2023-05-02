@@ -136,7 +136,7 @@ Func MoveSafely($lDestX, $lDestY)
 	$moveTimer = TimerInit()
 	$blockedCount = 0
 	$aRandom = 100
-	While ComputeDistance(DllStructGetData(GetAgentByID(), 'X'), DllStructGetData(GetAgentByID(), 'Y'), $lDestX, $lDestY) > 100 And TimerDiff($moveTimer) < 20000
+	While ComputeDistance(DllStructGetData(GetAgentByID(), 'X'), DllStructGetData(GetAgentByID(), 'Y'), $lDestX, $lDestY) > 100 And TimerDiff($moveTimer) < 25000
 		If GetMapLoading() == 2 Then Disconnected()
 		If GetIsDead(-2) Then Return
 		If IsRecharged(3) And GetEnergy(-2) >= 5 And GetNumberOfFoesInRangeOfAgentCastingMS(2000) > 0 Then UseSkillEx(3)
@@ -152,8 +152,8 @@ Func MoveSafely($lDestX, $lDestY)
 		; Move backward since we almost certainly are closed in
 		If DllStructGetData(GetAgentByID(), 'MoveX') == 0 And DllStructGetData(GetAgentByID(), 'MoveY') == 0 Then
 			$blockedCount += 1
-			If Mod($blockedCount, 50) < 5 Then
-				Move(DllStructGetData(GetAgentByID(), 'X') + Random(-$aRandom, $aRandom), DllStructGetData(GetAgentByID(), 'Y') + Random(25, $aRandom), 0)
+			If Mod($blockedCount, 5) < 5 Then
+				Move(DllStructGetData(GetAgentByID(), 'X') + 100, DllStructGetData(GetAgentByID(), 'Y') + 100, 0)
 			EndIf
 			If $blockedCount > 5 And IsRecharged(8) And IsRecharged(7) And GetEnergy(-2) >= 15 Then
 				UseSkillWhileCheckingForMs(8)
