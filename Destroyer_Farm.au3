@@ -87,6 +87,10 @@ Func Setup()
 EndFunc   ;==>Setup
 
 Func Zone() ;Starts farm
+	If GetGoldCharacter() > 80000 Then
+		Out("Depositing gold.")
+		DepositGold(70000)
+	EndIf
 	Local $brand = GetAgentByPlayerNumber(6227)
 	Local $rockFist = GetAgentByPlayerNumber(6235)
 	If isInventoryFull() Then

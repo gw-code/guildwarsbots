@@ -67,7 +67,10 @@ Func MainLoop()
 			IdentItemToMerchant()
 			SellItemToMerchant()
 		EndIf
-		DepositGold()
+		If GetGoldCharacter() > 80000 Then
+			Out("Depositing gold.")
+			DepositGold(70000)
+		EndIf
 		Setup()
 		Zone_Fast_Way()
 
