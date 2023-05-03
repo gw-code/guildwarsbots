@@ -136,6 +136,69 @@ Func GetItemMaxDmg($aitem)
 	Return Int("0x" & StringMid($lModString, $lPos - 2, 2))
 EndFunc   ;==>GetItemMaxDmg
 
+Func GetItemInscr($aItem)
+	If Not IsDllStruct($aItem) Then $aItem = GetItemByItemID($aItem)
+	Local $lModString = GetModStruct($aItem)
+	Local $lMods = ""
+	Local $lSearch = "3225"
+	Local $lPos = StringInStr($lModString, $lSearch)
+	If $lPos = 0 Then
+		$lSearch = "32A5"
+		$lPos = StringInStr($lModString, $lSearch)
+	EndIf
+	If $lPos = 0 Then Return 0
+	$lMods = StringMid($lModString, $lPos - 4, 8) & "|" & StringMid($lModString, $lPos + 4, 8)
+	Do
+		$lPos = StringInStr($lModString, $lSearch, 0, 1, $lPos + 1)
+		If $lPos = 0 Then ExitLoop
+		$lMods = $lMods & "|" & StringMid($lModString, $lPos + 4, 8)
+	Until false
+	If $lMods = "" Then Return 0
+	Local $lModArr = StringSplit($lMods, "|")
+	$lModArr[0] -= 1
+	Return $lModArr
+EndFunc
+
+Func GetItemMod1($aItem)
+	If Not IsDllStruct($aItem) Then $aItem = GetItemByItemID($aItem)
+	Local $lModString = GetModStruct($aItem)
+	Local $lMods = ""
+	Local $lPos = StringInStr($lModString, "3025", 0, 1)
+	If $lPos = 0 Then Return 0
+	$lMods = StringMid($lModString, $lPos - 4, 8) & "|" & StringMid($lModString, $lPos + 4, 8)
+	Do
+		$lPos = StringInStr($lModString, StringMid($lModString, $lPos - 4, 8), 0, 1, $lPos + 1)
+		If $lPos = 0 Then ExitLoop
+		$lMods = $lMods & "|" & StringMid($lModString, $lPos + 8, 8)
+	Until false
+	If $lMods = "" Then Return 0
+	Local $lModArr = StringSplit($lMods, "|")
+	$lModArr[0] -= 1
+	Return $lModArr
+EndFunc   ;==>GetItemMod1
+
+Func GetItemMod2($aItem)
+	If Not IsDllStruct($aItem) Then $aItem = GetItemByItemID($aItem)
+	Local $lModString = GetModStruct($aItem)
+	Local $lMods = ""
+	Local $lMod1 = ""
+	Local $lPos = StringInStr($lModString, "3025", 0, 1)
+	If $lPos = 0 Then Return 0
+	$lMod1 = StringMid($lModString, $lPos - 4, 8)
+	Do
+		$lPos = StringInStr($lModString, "3025", 0, 1, $lPos + 1)
+		If $lPos = 0 Then ExitLoop
+		If StringMid($lModString, $lPos - 4, 8) = $lMod1 Then ContinueLoop
+		If $lMods = "" Then
+			$lMods = StringMid($lModString, $lPos - 4, 8)
+		EndIf
+		$lMods = $lMods & "|" & StringMid($lModString, $lPos + 4, 8)
+	Until false
+	If $lMods = "" Then Return 0
+	Local $lModArr = StringSplit($lMods, "|")
+	$lModArr[0] -= 1
+	Return $lModArr
+EndFunc   ;==>GetItemMod2
 
 ;~ Description: Returns if rare weapon.
 Func GetIsRareWeapon($aitem)
@@ -147,5 +210,8 @@ Func GetIsRareWeapon($aitem)
 	If $Attribute = 22 And $Requirement <= 8 And $Damage = 16 Then Return True
 	If $Attribute = 36 And $Requirement <= 8 And $Damage = 16 Then Return True
 	If $Attribute = 37 And $Requirement <= 8 And $Damage = 16 Then Return True
+	; gimme oldskool dualmod shields
+	If $Attribute = 22 And $Requirement > 8 And $Requirement < 12 And Not GetItemInscr($aitem) And GetItemMod1($aitem) <> 0 And GetItemMod2($aitem) <> 0 Then Return True
+	If $Attribute = 18 And $Requirement > 8 And $Requirement < 12 And Not GetItemInscr($aitem) And GetItemMod1($aitem) <> 0 And GetItemMod2($aitem) <> 0 Then Return True
 	Return False
 EndFunc   ;==>GetIsRareWeapon
