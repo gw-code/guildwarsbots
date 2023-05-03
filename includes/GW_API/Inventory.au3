@@ -113,7 +113,7 @@ Func CanSell($aitem)
 	EndIf
 	
 	For $i = 0 To UBound($wontSell) - 1
-		If ($m = $wontSell[$i]) Then
+		If ($m = $wontSell[$i]) And $i <> 330 Then
 			Return False
 		EndIf
 	Next
@@ -159,59 +159,33 @@ Func GetItemInscr($aItem)
 	Return $lModArr
 EndFunc
 
-Func GetItemMod1($aItem)
-	If Not IsDllStruct($aItem) Then $aItem = GetItemByItemID($aItem)
-	Local $lModString = GetModStruct($aItem)
-	Local $lMods = ""
-	Local $lPos = StringInStr($lModString, "3025", 0, 1)
-	If $lPos = 0 Then Return 0
-	$lMods = StringMid($lModString, $lPos - 4, 8) & "|" & StringMid($lModString, $lPos + 4, 8)
-	Do
-		$lPos = StringInStr($lModString, StringMid($lModString, $lPos - 4, 8), 0, 1, $lPos + 1)
-		If $lPos = 0 Then ExitLoop
-		$lMods = $lMods & "|" & StringMid($lModString, $lPos + 8, 8)
-	Until false
-	If $lMods = "" Then Return 0
-	Local $lModArr = StringSplit($lMods, "|")
-	$lModArr[0] -= 1
-	Return $lModArr
-EndFunc   ;==>GetItemMod1
-
-Func GetItemMod2($aItem)
-	If Not IsDllStruct($aItem) Then $aItem = GetItemByItemID($aItem)
-	Local $lModString = GetModStruct($aItem)
-	Local $lMods = ""
-	Local $lMod1 = ""
-	Local $lPos = StringInStr($lModString, "3025", 0, 1)
-	If $lPos = 0 Then Return 0
-	$lMod1 = StringMid($lModString, $lPos - 4, 8)
-	Do
-		$lPos = StringInStr($lModString, "3025", 0, 1, $lPos + 1)
-		If $lPos = 0 Then ExitLoop
-		If StringMid($lModString, $lPos - 4, 8) = $lMod1 Then ContinueLoop
-		If $lMods = "" Then
-			$lMods = StringMid($lModString, $lPos - 4, 8)
-		EndIf
-		$lMods = $lMods & "|" & StringMid($lModString, $lPos + 4, 8)
-	Until false
-	If $lMods = "" Then Return 0
-	Local $lModArr = StringSplit($lMods, "|")
-	$lModArr[0] -= 1
-	Return $lModArr
-EndFunc   ;==>GetItemMod2
+Func HasTwoUsefulMods($ModStruct)
+	Local $UsefulMods = 0
+	Local $aModStrings[160] = ["003C7823", "05320823", "0500F822", "0F00D822", "000A0822", "000AA823", "002D6823", "00140828", "00130828", "0A0018A1", "0A0318A1", "0A0B18A1", "0A0518A1", "0A0418A1", "0A0118A1", "0A0218A1", "02008820", "0200A820", "05147820", "05009821", "000AA823", "00142828", "00132828", "0100E820", "000AA823", "00142828", "00132828", "002D6823", "002C6823", "002B6823", "002D8823", "002C8823", "002B8823", "001E4823", "001D4823", "001C4823", "14011824", "13011824", "14021824", "13021824", "14031824", "13031824", "14041824", "13041824", "14051824", "13051824", "14061824", "13061824", "14071824", "13071824", "14081824", "13081824", "14091824", "13091824", "140A1824", "130A1824", "140B1824", "130B1824", "140D1824", "130D1824", "140E1824", "130E1824", "140F1824", "130F1824", "14101824", "13101824", "14201824", "13201824", "14211824", "13211824", "14221824", "13221824", "14241824", "13241824", "0A004821", "0A014821", "0A024821", "0A034821", "0A044821", "0A054821", "0A064821", "0A074821", "0A084821", "0A094821", "0A0A4821", "01131822", "02131822", "03131822", "04131822", "05131822", "06131822", "07131822", "08131822", "09131822", "0A131822", "0B131822", "0D131822", "0E131822", "0F131822", "10131822", "20131822", "21131822", "22131822", "24131822", "01139823", "02139823", "03139823", "04139823", "05139823", "06139823", "07139823", "08139823", "09139823", "0A139823", "0B139823", "0D139823", "0E139823", "0F139823", "10139823", "20139823", "21139823", "22139823", "24139823"]
+	Local $NumMods = 159
+	For $i = 0 to $NumMods
+	   Local $ModStr = StringInStr($ModStruct, $aModStrings[$i], 0, 1)
+	   If ($ModStr > 1) Then
+		  $UsefulMods += 1
+	   EndIf
+	Next
+	If $UsefulMods >= 2 Then Return True
+	Return False
+ EndFunc
 
 ;~ Description: Returns if rare weapon.
 Func GetIsRareWeapon($aitem)
 	Local $Attribute = GetItemAttribute($aitem)
 	Local $Requirement = GetItemReq($aitem)
 	Local $Damage = GetItemMaxDmg($aitem)
-	If $Attribute = 21 And $Requirement <= 8 And $Damage = 22 Then Return True
-	If $Attribute = 18 And $Requirement <= 8 And $Damage = 16 Then Return True
-	If $Attribute = 22 And $Requirement <= 8 And $Damage = 16 Then Return True
-	If $Attribute = 36 And $Requirement <= 8 And $Damage = 16 Then Return True
-	If $Attribute = 37 And $Requirement <= 8 And $Damage = 16 Then Return True
+	Local $modStr = GetModStruct($aitem)
+	If $Attribute = 20 And $Requirement <= 8 And $Damage = 22 Then Return True
+	If $Attribute = 17 And $Requirement <= 8 And $Damage = 16 Then Return True
+	If $Attribute = 21 And $Requirement <= 8 And $Damage = 16 Then Return True
+	If $Attribute = 39 And $Requirement <= 8 And $Damage = 16 Then Return True
+	If $Attribute = 38 And $Requirement <= 8 And $Damage = 16 Then Return True
 	; gimme oldskool dualmod shields
-	If $Attribute = 22 And $Requirement > 8 And $Requirement < 12 And Not GetItemInscr($aitem) And GetItemMod1($aitem) <> 0 And GetItemMod2($aitem) <> 0 Then Return True
-	If $Attribute = 18 And $Requirement > 8 And $Requirement < 12 And Not GetItemInscr($aitem) And GetItemMod1($aitem) <> 0 And GetItemMod2($aitem) <> 0 Then Return True
+	If $Requirement > 8 And $Requirement < 12 And Not GetItemInscr($aitem) And HasTwoUsefulMods($modStr) Then Return True
+	If $Requirement > 8 And $Requirement < 12 And Not GetItemInscr($aitem) And HasTwoUsefulMods($modStr) Then Return True
 	Return False
 EndFunc   ;==>GetIsRareWeapon
