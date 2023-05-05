@@ -137,7 +137,7 @@ Func AggroAndPrepare() ;Prepares players with enchants and aggro mobs
 	WaitAndStayAlive(2000)
 	MoveSafely(-2232.54, 3384.54)
 	WaitAndStayAlive(2000)
-	MoveSafely(-2253.28, 810.86)
+	MoveSafely(-2253.28, 830.86)
 	WaitAndStayAlive(2000)
 	UseSkillEx(7)
 	Sleep(100)
@@ -196,7 +196,7 @@ Func Kill() ;Kills mobs
 	$target = GetBestTarget()
 	$targetID = DllStructGetData($target, 'ID')
 	Out('Wooping ass.')
-	StayAlive(1, 0)
+	StayAlive()
 	UseSkillEx(6, $targetID)
 	UseSkillEx(8)
 
