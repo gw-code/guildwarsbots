@@ -156,6 +156,7 @@ Func GetItemInscr($aItem)
 	If $lMods = "" Then Return 0
 	Local $lModArr = StringSplit($lMods, "|")
 	$lModArr[0] -= 1
+
 	Return $lModArr
 EndFunc
 
@@ -185,7 +186,7 @@ Func GetIsRareWeapon($aitem)
 	If $Attribute = 39 And $Requirement <= 8 And $Damage = 16 Then Return True
 	If $Attribute = 38 And $Requirement <= 8 And $Damage = 16 Then Return True
 	; gimme oldskool dualmod shields
-	If $Requirement > 8 And $Requirement < 12 And Not GetItemInscr($aitem) And HasTwoUsefulMods($modStr) Then Return True
-	If $Requirement > 8 And $Requirement < 12 And Not GetItemInscr($aitem) And HasTwoUsefulMods($modStr) Then Return True
+	If $Requirement > 8 And $Requirement < 12 And GetItemInscr($aitem) == 0 And HasTwoUsefulMods($modStr) Then Return True
+	If $Requirement > 8 And $Requirement < 12 And GetItemInscr($aitem) == 0 And HasTwoUsefulMods($modStr) Then Return True
 	Return False
 EndFunc   ;==>GetIsRareWeapon

@@ -94,10 +94,12 @@ Func Zone() ;Starts farm
 	Local $brand = GetAgentByPlayerNumber(6227)
 	Local $rockFist = GetAgentByPlayerNumber(6235)
 	If isInventoryFull() Then
+		MoveTo(378.16, 1262.63)
 		GoToNPC($rockFist)
 		IdentItemToMerchant()
 		SellItemToMerchant()
 		CloseAllPanels()
+		MoveTo(378.16, 1262.63)
 		GoToNPC($brand)
 	EndIf
 	GoToNPC($brand)
@@ -194,6 +196,7 @@ Func Kill() ;Kills mobs
 	$target = GetBestTarget()
 	$targetID = DllStructGetData($target, 'ID')
 	Out('Wooping ass.')
+	StayAlive(1, 0)
 	UseSkillEx(6, $targetID)
 	UseSkillEx(8)
 
