@@ -1845,6 +1845,8 @@ Func DisableRendering()
 	MemoryWrite($mDisableRendering, 1)
 EndFunc   ;==>DisableRendering
 
+#EndRegion Rendering
+
 ;~ Description: Display all names.
 Func DisplayAll($aDisplay)
 	DisplayAllies($aDisplay)

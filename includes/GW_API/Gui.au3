@@ -38,9 +38,16 @@ Global $StatusLabel
 Global $dropCounterLabels = ObjCreate("Scripting.Dictionary")
 Global $dropCounter = ObjCreate("Scripting.Dictionary")
 Global $title
+Global $DisableRend
 #EndRegion Variables
 
-
+Func ToggleRendering()
+	If (GUICtrlRead($DisableRend) == $GUI_CHECKED) Then
+        DisableRendering()
+    Else
+        EnableRendering()
+    EndIf
+EndFunc
 Func initGui($dropCounterDictionary)
 
 	GUICtrlCreateGroup("Select a Character", 10, 5, 150, 43)
@@ -56,7 +63,8 @@ Func initGui($dropCounterDictionary)
 	GUICtrlSetOnEvent(-1, "GuiButtonHandler")
 
 	$GoldIdent = GUICtrlCreateCheckbox("Don't Ident Golds", 180, 268, 110, 17)
-
+	$DisableRend = GUICtrlCreateCheckbox("Disable rendering", 180, 248, 110, 17)
+	GUICtrlSetOnEvent($DisableRend, "ToggleRendering")
 	GUICtrlCreateGroup("Stats", 10, 50, 150, 80)
 	GUICtrlCreateLabel("Runs:", 20, 62, 31, 15)
 	$RunsCount = GUICtrlCreateLabel("0", 95, 62, 60, 15, $SS_CENTER)
@@ -181,6 +189,7 @@ Func ActivateAllGUI() ;Activate selectors and checkboxes (except Start/Pause but
 	GUICtrlSetState($selectAllBags, $GUI_ENABLE)
 	GUICtrlSetState($selectAllItemTypes, $GUI_ENABLE)
 	GUICtrlSetState($GoldIdent, $GUI_ENABLE)
+	GUICtrlSetState($DisableRend, $GUI_ENABLE)
 
 EndFunc   ;==>ActivateAllGUI
 
@@ -195,6 +204,7 @@ Func DeactivateAllGUI($Selectors = 1) ;Deactivate selectors and checkboxes (exce
 		Next
 		GUICtrlSetState($SellGold, $GUI_DISABLE)
 		GUICtrlSetState($GoldIdent, $GUI_DISABLE)
+		GUICtrlSetState($DisableRend, $GUI_DISABLE)
 	EndIf
 
 
