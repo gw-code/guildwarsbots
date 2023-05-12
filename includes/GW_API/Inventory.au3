@@ -96,13 +96,6 @@ Func CanSell($aitem)
 	If GetItemReq($aitem) > 10 Then
 		Return True
 	EndIf
-
-	; Cele
-	For $i = 0 To UBound($CelestialWeapons) - 1
-		If $m = $CelestialWeapons[$i] Then
-			Return False
-		EndIf
-	Next
 	
 	If GetIsRareWeapon($aitem) Then Return False
 	; Special stuff
