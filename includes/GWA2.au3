@@ -1847,7 +1847,7 @@ EndFunc   ;==>DisableRendering
 
 #EndRegion Rendering
 
-;~ Description: Display all names.
+;~ Description: Display all names. max sucks
 Func DisplayAll($aDisplay)
 	DisplayAllies($aDisplay)
 	DisplayEnemies($aDisplay)
